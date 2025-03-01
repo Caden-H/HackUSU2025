@@ -3,13 +3,7 @@
 - Add music/SFX
 - Caden will add Particles in various places- look into pixi's ParticleContainer for this, for performance reasons.
 - Better bullet images could be nice
-- Come up with name
-    - Split Fire
-    - Mind Your Fire
-    - Cross Tanks
-    - Lost in Fire
-    - Mixed Battalion
-    - Fire Divided
+- Come up with name- SaboTanks
 - More maps would be cool
 
 tutorial? gotta get players to look at their tank, easy to get distracted by gun lol
