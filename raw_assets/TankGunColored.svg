@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="112.30399mm"
+   height="113.50132mm"
+   viewBox="0 0 112.30399 113.50132"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="layer1"
+     transform="translate(-28.884051,-99.819887)">
+    <g
+       id="g47"
+       transform="translate(-19.963953,-7.6671238)">
+      <circle
+         style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:3.488;stroke-dasharray:none;stroke-opacity:1"
+         id="circle26"
+         cx="105"
+         cy="164.22369"
+         r="14.416405" />
+      <path
+         id="path26"
+         style="font-variation-settings:normal;fill:#3c2cd9;fill-opacity:1;stroke:#0f0183;stroke-width:2.139;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         d="m 104.99979,114.03012 c -5.24925,0 -9.474871,2.63822 -9.474871,5.91488 v 36.17764 a 12.280023,12.280023 0 0 0 -2.804997,7.78247 12.280023,12.280023 0 0 0 12.279868,12.27987 12.280023,12.280023 0 0 0 12.28039,-12.27987 12.280023,12.280023 0 0 0 -2.805,-7.81038 V 119.945 c 0,-3.27666 -4.22614,-5.91488 -9.47539,-5.91488 z" />
+      <ellipse
+         style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:#0f0183;stroke-width:0.657492;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         id="ellipse26"
+         cx="105"
+         cy="120.33091"
+         rx="6.6812296"
+         ry="3.8054883" />
+    </g>
+    <ellipse
+       style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:0;stroke:none;stroke-width:6.02001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0, 12.04;stroke-dashoffset:13.244;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path37"
+       cx="116.67941"
+       cy="141.74092"
+       rx="29.988443"
+       ry="18.533876" />
+  </g>
+</svg>
