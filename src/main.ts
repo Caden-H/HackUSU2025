@@ -12,10 +12,18 @@ import logoSrc from "../raw_assets/Logo.svg?url";
 import bodySrc from "../raw_assets/TankBody.svg?url";
 import gunSrc from "../raw_assets/TankGun.svg?url";
 
+
+import musicSrc from '../raw_assets/music.wav';
+
 (async () => {
   function getSquareSize() {
     return window.innerHeight;
   }
+
+  
+  const music = new Audio(musicSrc);
+  music.loop = true;
+  music.volume = 0.5;
 
   // Create a Pixi Application
   const app = new PIXI.Application();
@@ -134,6 +142,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
    * Start the actual game with the given number of players
    */
   async function startGame(numPlayers: number) {
+    music.play()
     // Remove the start screen from the stage
     gameState = "play"; // switch the game state
     app.stage.removeChild(startScreen);
