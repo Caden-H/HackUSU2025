@@ -10,6 +10,7 @@
     "dev": "vite"
   },
   "dependencies": {
+    "@footgun/collision-2d": "github:mreinstein/collision-2d",
     "pixi.js": "^8.8.1"
   },
   "devDependencies": {
