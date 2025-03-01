@@ -3,7 +3,7 @@ import { Gun } from './gun';
 import { Bullet } from './bullet';
 
 export class Player {
-  public container: PIXI.Container;
+  public sprite: PIXI.Sprite;
   public gun: Gun;
 
   private speed: number = 3;
@@ -12,18 +12,15 @@ export class Player {
 
   private bulletArray: Bullet[] = [];
 
-  constructor(x: number, y: number, color: number) {
-    this.container = new PIXI.Container();
-    this.container.x = x;
-    this.container.y = y;
+  constructor(body_sprite: PIXI.Sprite, gun_sprite: PIXI.Sprite, x: number, y: number, body_color: number, gun_color: number) {
+    this.sprite = body_sprite;
+    this.sprite.x = x;
+    this.sprite.y = y;
+    this.sprite.tint = body_color;
+    this.sprite.scale = 0.2;
+    gun_sprite.scale = this.sprite.scale;
 
-    const gfx = new PIXI.Graphics();
-    gfx.beginFill(color);
-    gfx.drawCircle(0, 0, this.radius);
-    gfx.endFill();
-    this.container.addChild(gfx);
-
-    this.gun = new Gun();
+    this.gun = new Gun(gun_sprite, x, y, gun_color);
   }
 
   public setBulletArray(bullets: Bullet[]) {
@@ -36,14 +33,15 @@ export class Player {
     // Basic collision detection with bullets
     for (const bullet of this.bulletArray) {
       if (!bullet.isExpired) {
-        const dx = bullet.sprite.x - this.container.x;
-        const dy = bullet.sprite.y - this.container.y;
+        const dx = bullet.sprite.x - this.sprite.x;
+        const dy = bullet.sprite.y - this.sprite.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         // sum of radii = 20 (player) + 5 (bullet) = 25
         if (dist < (this.radius + 5)) {
           this.isDead = true;
-          this.container.visible = false;
+          this.sprite.visible = false;
+          this.gun.sprite.visible = false;
           // Optionally bullet.isExpired = true
           break;
         }
@@ -54,7 +52,14 @@ export class Player {
   public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
 
-    this.container.x += xAxis * this.speed;
-    this.container.y += yAxis * this.speed;
+    this.sprite.x += xAxis * this.speed;
+    this.sprite.y += yAxis * this.speed;
+
+    if (xAxis !== 0 || yAxis !== 0) {
+        this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
+    }
+
+    this.gun.sprite.x = this.sprite.x;
+    this.gun.sprite.y = this.sprite.y;
   }
 }

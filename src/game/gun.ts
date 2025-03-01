@@ -2,9 +2,17 @@ import * as PIXI from 'pixi.js';
 import { Bullet } from './bullet';
 
 export class Gun {
+  public sprite: PIXI.Sprite;
   private direction = { x: 1, y: 0 };
   private bulletsRef: Bullet[] = [];
   private stageRef?: PIXI.Container;
+
+  constructor(sprite: PIXI.Sprite, x: number, y: number, color: number) {
+      this.sprite = sprite;
+      this.sprite.x = x;
+      this.sprite.y = y;
+      this.sprite.tint = color;
+    }
 
   // Cooldown in ms
   private cooldown: number = 500;
@@ -21,16 +29,15 @@ export class Gun {
     this.stageRef = stage;
   }
 
-  /**
-   * Called from main.ts's readGamepads() to aim the gun.
-   * We also get the player's center if we need it for anything else,
-   * but here we only store the direction vector.
-   */
-  public setDirection(x: number, y: number, _originX: number, _originY: number): void {
+  public setDirection(x: number, y: number): void {
     const magnitude = Math.sqrt(x * x + y * y);
     if (magnitude > 0.15) {
       this.direction.x = x / magnitude;
       this.direction.y = y / magnitude;
+    }
+    
+    if (x !== 0 || y !== 0) {
+        this.sprite.rotation = Math.atan2(y, x) + Math.PI / 2;
     }
   }
 
