@@ -25,10 +25,10 @@
          r="14.416405" />
       <path
          id="path26"
-         style="font-variation-settings:normal;fill:#ff6d2b;fill-opacity:1;stroke:#9a3000;stroke-width:2.139;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         style="font-variation-settings:normal;fill:#959595;fill-opacity:1;stroke:#4d4d4d;stroke-width:2.139;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
          d="m 104.99979,114.03012 c -5.24925,0 -9.474871,2.63822 -9.474871,5.91488 v 36.17764 a 12.280023,12.280023 0 0 0 -2.804997,7.78247 12.280023,12.280023 0 0 0 12.279868,12.27987 12.280023,12.280023 0 0 0 12.28039,-12.27987 12.280023,12.280023 0 0 0 -2.805,-7.81038 V 119.945 c 0,-3.27666 -4.22614,-5.91488 -9.47539,-5.91488 z" />
       <ellipse
-         style="font-variation-settings:normal;fill:#2a0c00;fill-opacity:1;stroke:#6c2200;stroke-width:0.992833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         style="font-variation-settings:normal;fill:#151515;fill-opacity:1;stroke:#363636;stroke-width:0.992833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
          id="ellipse26"
          cx="105"
          cy="120.33091"
