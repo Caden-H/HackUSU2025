@@ -1,7 +1,8 @@
-import * as PIXI from 'pixi.js';
-import { Wall} from './wall'
-import { Gun } from './gun';
-import { Bullet } from './bullet';
+import * as PIXI from "pixi.js";
+import { Wall } from "./wall";
+import { Gun } from "./gun";
+import { Bullet } from "./bullet";
+import { vibrateGamepad } from "./vibration";
 
 export class Player {
   public sprite: PIXI.Sprite;
@@ -11,6 +12,7 @@ export class Player {
   public speed: number = 180;
   public radius: number = 20;
   public isDead: boolean = false;
+  public playerIndex: number = 0; // Track player's index for gamepad access
 
   private bulletArray: Bullet[] = [];
 
@@ -20,7 +22,8 @@ export class Player {
     x: number,
     y: number,
     body_color: number,
-    gun_color: number
+    gun_color: number,
+    index: number = 0 // Add index parameter with default value
   ) {
     this.sprite = body_sprite;
     this.sprite.x = x;
@@ -28,6 +31,7 @@ export class Player {
     this.sprite.tint = body_color;
     this.sprite.scale = 0.2;
     gun_sprite.scale = this.sprite.scale;
+    this.playerIndex = index;
 
     this.gun = new Gun(gun_sprite, x, y, gun_color);
   }
@@ -42,14 +46,14 @@ export class Player {
     let moveX = this.vx * delta;
     let moveY = this.vy * delta;
 
-    const targetPoint = new PIXI.Point(this.sprite.x + moveX, this.sprite.y + moveY);
-    const { inside } = boundary.contains(targetPoint.x, targetPoint.y);
-    const nearestPoint = boundary.nearestPoint(
-      targetPoint.x,
-      targetPoint.y
+    const targetPoint = new PIXI.Point(
+      this.sprite.x + moveX,
+      this.sprite.y + moveY
     );
+    const { inside } = boundary.contains(targetPoint.x, targetPoint.y);
+    const nearestPoint = boundary.nearestPoint(targetPoint.x, targetPoint.y);
 
-    if(!inside) {
+    if (!inside) {
       moveX = nearestPoint.x - this.sprite.x;
       moveY = nearestPoint.y - this.sprite.y;
     }
@@ -73,17 +77,26 @@ export class Player {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         // sum of radii = 20 (player) + 5 (bullet) = 25
-        if (dist < (this.radius + bullet.radius)) {
-          this.isDead = true;
-          this.sprite.visible = false;
-          this.gun.sprite.visible = false;
-          bullet.isExpired = true;
+        if (dist < this.radius + bullet.radius) {
+          this.death(bullet);
           break;
         }
       }
     }
   }
 
+  public death(bullet: Bullet) {
+    this.isDead = true;
+    this.sprite.visible = false;
+    this.gun.sprite.visible = false;
+    bullet.isExpired = true;
+
+    // Get the gamepad for this player and apply a strong death vibration
+    const gamepads = navigator.getGamepads();
+    const gamepad = gamepads[this.playerIndex];
+    if (gamepad) vibrateGamepad(gamepad, 200, 1.0, 1.0);
+    
+  }
 
   public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
@@ -99,7 +112,7 @@ export class Player {
       if (currentVelMag <= this.speed) {
         this.vx = desiredVX;
         this.vy = desiredVY;
-      }  else {
+      } else {
         const lerpFactor = 0.01; // Adjust between 0 and 1 to control influence.
         this.vx = this.vx + (desiredVX - this.vx) * lerpFactor;
         this.vy = this.vy + (desiredVY - this.vy) * lerpFactor;
@@ -108,11 +121,11 @@ export class Player {
       // Update rotation to face the input direction.
       this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
     } else {
-        const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-        if (currentVelMag <= this.speed) {
-            this.vx = 0;
-            this.vy = 0;
-        }
+      const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+      if (currentVelMag <= this.speed) {
+        this.vx = 0;
+        this.vy = 0;
+      }
     }
   }
 }

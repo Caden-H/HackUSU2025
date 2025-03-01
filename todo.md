@@ -9,7 +9,7 @@ More maps would be cool
 tutorial? gotta get players to look at their tank, easy to get distracted by gun lol
 
 Bugs:
-- If you bump a player in the direction that they shoot a big bullet, the bullet spawn and immedietelly kills them (maybe bullets have a moment where they can't kill the player that shot them?)
+- If you bump a player in the direction that they shoot a bullet, the bullet spawns and immedietelly kills them (maybe bullets have a moment where they can't kill the player that shot them?)
 
 Future gamemode ideas:
 - Soccer

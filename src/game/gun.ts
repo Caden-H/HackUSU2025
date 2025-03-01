@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { Bullet } from './bullet';
+import { vibrateGamepad } from "./vibration";
 
 export class Gun {
   public sprite: PIXI.Sprite;
@@ -58,13 +59,20 @@ export class Gun {
   /**
    * Fire a normal shot.
    */
-  public shootNormal(originX: number, originY: number): void {
+    /**
+   * Fire a normal shot.
+   */
+  /**
+   * Fire a normal shot.
+   */
+  public shootNormal(originX: number, originY: number, gp?: Gamepad): void {
     if (!this.stageRef || !this.sprite.visible || this.isCharging) return;
 
     const now = performance.now();
     const elapsedTime = now - this.gameStartTime;
     const cooldownDecreaseRate = 0.05;
     const currentCooldown = Math.max(this.minCooldown, this.baseCooldown - elapsedTime * cooldownDecreaseRate);
+    
     if (now - this.lastShotTime < currentCooldown) return;
     this.lastShotTime = now;
 
@@ -76,6 +84,11 @@ export class Gun {
     const bullet = new Bullet(bulletX, bulletY, this.direction.x, this.direction.y, baseBulletSpeed, 5, 0xffffff);
     this.bulletsRef.push(bullet);
     this.stageRef.addChild(bullet.sprite);
+    
+    // Vibrate after successfully firing the bullet
+    if (gp) {
+      vibrateGamepad(gp, 50, 0.8, 0.4); // Using fixed duration instead of currentCooldown
+    }
   }
 
   /**
@@ -83,7 +96,7 @@ export class Gun {
    * If chargeButtonPressed is true, then start (or continue) charging.
    * When it becomes false, release the charged shot.
    */
-  public updateCharge(originX: number, originY: number, chargeButtonPressed: boolean): void {
+  public updateCharge(originX: number, originY: number, chargeButtonPressed: boolean, gp?: Gamepad): void {
     const now = performance.now();
     const elapsedTime = now - this.gameStartTime;
     const cooldownDecreaseRate = 0.05;
@@ -104,6 +117,10 @@ export class Gun {
       const indicatorRadius = baseBulletRadius * (1 + 4 * t);
       // Change to gold if fully charged.
       const indicatorColor = t >= 1 ? 0xFFD700 : 0xffffff;
+
+      if (gp && chargeDuration < this.maxCharge) {
+        vibrateGamepad(gp, 10 * t, 0.8, 0.4); // Using fixed duration instead of currentCooldown
+      }
       
       // Update the charge indicator graphic.
       this.chargeIndicator.clear();

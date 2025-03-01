@@ -1,13 +1,13 @@
-import * as PIXI from 'pixi.js';
-import { Player } from './game/player';
-import { Bullet } from './game/bullet';
-import { WinScreen } from './game/winscreen';
-import { Wall } from './game/wall'
-import { RandomWall } from './game/randomwall';
+import * as PIXI from "pixi.js";
+import { Player } from "./game/player";
+import { Bullet } from "./game/bullet";
+import { WinScreen } from "./game/winscreen";
+import { Wall } from "./game/wall";
+import { RandomWall } from "./game/randomwall";
+import { vibrateGamepad } from "./game/vibration";
 
-
-import bodySrc from '../raw_assets/TankBody.svg?url';
-import gunSrc from '../raw_assets/TankGun.svg?url';
+import bodySrc from "../raw_assets/TankBody.svg?url";
+import gunSrc from "../raw_assets/TankGun.svg?url";
 
 (async () => {
   // Helper to ensure the canvas is a square of size window.innerHeight
@@ -20,26 +20,32 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   await app.init({
     width: getSquareSize(),
     height: getSquareSize(),
-    backgroundColor: 0x333333
+    backgroundColor: 0x333333,
   });
   document.body.appendChild(app.canvas);
 
   // Position the canvas absolutely at the top and center it horizontally
-  app.canvas.style.position = 'absolute';
-  app.canvas.style.top = '0';
+  app.canvas.style.position = "absolute";
+  app.canvas.style.top = "0";
   const updateCanvasPosition = () => {
     const size = getSquareSize();
     app.renderer.resize(size, size);
     app.canvas.style.left = `${(window.innerWidth - size) / 2}px`;
   };
-  window.addEventListener('resize', updateCanvasPosition);
+  window.addEventListener("resize", updateCanvasPosition);
   updateCanvasPosition();
 
   const numPlayers = 2;
   const winScreen = new WinScreen(app, numPlayers);
 
-  const player_body_texture = await PIXI.Assets.load({ src: bodySrc, data: { resolution: 10 } });
-  const player_gun_texture = await PIXI.Assets.load({ src: gunSrc, data: { resolution: 10 } });
+  const player_body_texture = await PIXI.Assets.load({
+    src: bodySrc,
+    data: { resolution: 10 },
+  });
+  const player_gun_texture = await PIXI.Assets.load({
+    src: gunSrc,
+    data: { resolution: 10 },
+  });
 
   const players: Player[] = [];
   const initialPositions: { x: number; y: number }[] = [];
@@ -55,7 +61,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
 
   // Create players in a circle around the center
   for (let i = 0; i < numPlayers; i++) {
-    const angle = (2 * Math.PI / numPlayers) * i;
+    const angle = ((2 * Math.PI) / numPlayers) * i;
     const x = center + radius * Math.cos(angle);
     const y = center + radius * Math.sin(angle);
     initialPositions.push({ x, y });
@@ -71,7 +77,15 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     gunSprite.anchor.set(0.5);
     app.stage.addChild(gunSprite);
 
-    const player = new Player(bodySprite, gunSprite, x, y, playerColor, gunColor);
+    const player = new Player(
+      bodySprite,
+      gunSprite,
+      x,
+      y,
+      playerColor,
+      gunColor,
+      i // Pass the player index
+    );
     (player as any).color = playerColor;
     players.push(player);
   }
@@ -102,10 +116,10 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       app.stage.removeChild(bullet.sprite);
       bullets.splice(i, 1);
     }
-    
+
     // Remove old wall graphics.
     app.stage.removeChild(boundaryGraphics);
-    
+
     // Create a new random wall and boundary.
     randomWall = new RandomWall(app.canvas.width, app.canvas.height);
     boundary = new Wall(randomWall.points);
@@ -124,7 +138,6 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       player.gun.sprite.visible = true;
     });
     winScreen.reset();
-
   }
 
   function applyDeadZone(ax: number, ay: number, deadZone: number = 0.1) {
@@ -142,8 +155,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       const gp = gamepads[i];
       if (gp) {
         // Movement: player i uses left stick for their own movement.
-        const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1])
-
+        const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
         players[i].move(moveX, moveY);
 
         // Gun control: player i uses right stick to control next player's gun.
@@ -151,25 +163,27 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
         const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
         players[nextIndex].gun.setDirection(gunX, gunY);
 
-        // Normal shot via left triggers.
+        // Normal shot via right triggers.
         if (gp.buttons[5]?.pressed || gp.buttons[7]?.pressed) {
           players[nextIndex].gun.shootNormal(
             players[nextIndex].sprite.x,
-            players[nextIndex].sprite.y
+            players[nextIndex].sprite.y,
+            gp
           );
         }
 
-        // Charge shot via right triggers.
+        // Charge shot via left triggers.
         // We call updateCharge each frame, passing true if the button is pressed.
         const chargePressed = gp.buttons[4]?.pressed || gp.buttons[6]?.pressed;
         players[nextIndex].gun.updateCharge(
           players[nextIndex].sprite.x,
           players[nextIndex].sprite.y,
-          chargePressed
+          chargePressed,
+          gp
         );
 
         // Reset game if button 0 is pressed and at least one player is dead.
-        if (gp.buttons[0]?.pressed && players.some(p => p.isDead)) {
+        if (gp.buttons[0]?.pressed && players.some((p) => p.isDead)) {
           reset();
         }
       }
@@ -185,7 +199,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       player.update(delta.elapsedMS / 1000, boundary);
     }
 
-    // Loop over every unique pair of players.
+    // Loop over every unique pair of players for collision detection with players.
     for (let i = 0; i < players.length; i++) {
       for (let j = i + 1; j < players.length; j++) {
         const p1 = players[i];
@@ -204,15 +218,21 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
           const ny = dy / distance;
 
           // Calculate an impulse based on the overlap.
-          // Adjust the impulseMultiplier to control "bounce power".
           const impulseMultiplier = 600;
           const impulse = impulseMultiplier;
 
-          // Add impulse to each player's velocity in opposite directions.
+          // Apply impulse to each player's velocity.
           p1.vx -= nx * impulse;
           p1.vy -= ny * impulse;
           p2.vx += nx * impulse;
           p2.vy += ny * impulse;
+
+          // Vibrate both players' controllers for bounce feedback.
+          const allGamepads = navigator.getGamepads();
+          for (let k = 0; k < players.length; k++) {
+            const gp = allGamepads[k];
+            if (gp) vibrateGamepad(gp, 100, 0.5, 0.5);
+          }
         }
       }
     }
@@ -231,18 +251,18 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     const alivePlayers = players.filter((player) => !player.isDead);
     if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
       const winnerPlayer = alivePlayers[0] as any;
-      // Map fixed colors to names. For any additional players, you might handle them differently.
-      const fixedMapping: { [key: number]: 'Blue' | 'Red' | 'Green' | 'Yellow' | 'Winner' } = {
-        [0x0000ff]: 'Blue',
-        [0xff0000]: 'Red',
-        [0x00ff00]: 'Green',
-        [0xffff00]: 'Yellow',
-        [0x000000]: 'Winner',
+      const fixedMapping: {
+        [key: number]: "Blue" | "Red" | "Green" | "Yellow" | "Winner";
+      } = {
+        [0x0000ff]: "Blue",
+        [0xff0000]: "Red",
+        [0x00ff00]: "Green",
+        [0xffff00]: "Yellow",
+        [0x000000]: "Winner",
       };
 
-      // Use the mapping if available; otherwise, default to a generic label.
-      const winnerName = fixedMapping[winnerPlayer.color] || 'Winner';
-      if (winnerName !== 'Winner') {
+      const winnerName = fixedMapping[winnerPlayer.color] || "Winner";
+      if (winnerName !== "Winner") {
         winScreen.declareWinner(winnerName);
       }
     } else if (
@@ -250,7 +270,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       players.some((player) => player.isDead) &&
       !winScreen.isGameOver()
     ) {
-      winScreen.declareWinner('Draw');
+      winScreen.declareWinner("Draw");
     }
   });
 })();
