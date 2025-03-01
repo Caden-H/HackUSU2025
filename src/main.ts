@@ -11,6 +11,7 @@ import logoSrc from "../raw_assets/Logo.svg?url";
 
 import bodySrc from "../raw_assets/TankBody.svg?url";
 import gunSrc from "../raw_assets/TankGun.svg?url";
+import arrowSrc from "../raw_assets/Chevron.png?url";
 
 
 import musicSrc from '../raw_assets/music.wav';
@@ -221,6 +222,10 @@ import musicSrc from '../raw_assets/music.wav';
       src: gunSrc,
       data: { resolution: 10 },
     });
+    const arrow_texture = await PIXI.Assets.load({
+      src: arrowSrc,
+      data: { resolution: 10 },
+    });
 
     // Colors
     const fixedColors = [
@@ -256,10 +261,15 @@ import musicSrc from '../raw_assets/music.wav';
       gunSprite.anchor.set(0.5);
       app.stage.addChild(gunSprite);
 
+      const arrowSprite = new PIXI.Sprite(arrow_texture);
+      arrowSprite.anchor.set(0.5);
+      app.stage.addChild(arrowSprite);
+
       // Pass the particleSystem to the Player constructor
       const player = new Player(
         bodySprite,
         gunSprite,
+        arrowSprite,
         x,
         y,
         playerColor,
