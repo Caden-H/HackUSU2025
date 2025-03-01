@@ -45,7 +45,7 @@ export class Gun {
    * Shoot a bullet from the player's center plus some offset in the gun's direction.
    */
   public shoot(originX: number, originY: number): void {
-    if (!this.stageRef) return;
+    if (!this.stageRef || !this.sprite.visible) return;
 
     const now = performance.now();
     if (now - this.lastShotTime < this.cooldown) {

@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Player } from './game/player';
 import { Bullet } from './game/bullet';
+import { WinScreen } from './game/winscreen';
 
 import bodySrc from '../raw_assets/TankBody.svg?url';
 import gunSrc from '../raw_assets/TankGun.svg?url';
@@ -39,10 +40,8 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     app.canvas.style.left = `${(window.innerWidth - size) / 2}px`;
   })();
 
-  // Enable zIndex sorting
-  app.stage.sortableChildren = true;
+  const winScreen = new WinScreen(app);
 
-  
   // Player
   const player_body_texture = await PIXI.Assets.load({src: bodySrc, data: {resolution: 10}});
   const p1_body_sprite = PIXI.Sprite.from(player_body_texture);
@@ -87,9 +86,9 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     player2.isDead = false;
     player2.sprite.visible = true;
     player2.gun.sprite.visible = true;
+
+    winScreen.reset()
   }
-
-
 
   // Shared bullet array
   let bullets: Bullet[] = [];
@@ -102,18 +101,27 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   // Main game loop
   app.ticker.add((delta) => {
     readGamepads();
-    player1.update(delta);
-    player2.update(delta);
+    player1.update(delta.elapsedMS / 1000);
+    player2.update(delta.elapsedMS / 1000);
 
     // Update bullets & remove if expired
     for (let i = bullets.length - 1; i >= 0; i--) {
       const bullet = bullets[i];
-      bullet.update(delta);
+      bullet.update(delta.elapsedMS / 1000);
 
       if (bullet.isExpired) {
         app.stage.removeChild(bullet.sprite);
         bullets.splice(i, 1);
       }
+    }
+
+    if ((!player1.isDead && !player2.isDead) || winScreen.isGameOver()) return;
+    if (player1.isDead && !player2.isDead) {
+      winScreen.declareWinner('Blue');
+    } else if (player2.isDead && !player1.isDead) {
+      winScreen.declareWinner('Red');
+    } else {
+      winScreen.declareWinner('Draw');
     }
   });
 
