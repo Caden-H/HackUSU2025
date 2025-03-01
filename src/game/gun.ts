@@ -16,6 +16,7 @@ export class Gun {
   private minCooldown: number = 500;
   private lastShotTime: number = 0;
   private offset: number = 28; // spawn offset
+  private offsetMult: number = 1.5; // number of radii added to spawn offset
 
   // For charge shot
   private isCharging: boolean = false;
@@ -123,8 +124,8 @@ export class Gun {
       this.chargeIndicator.endFill();
       
       // Position the indicator at the tip of the gun.
-      const tipX = this.sprite.x + this.direction.x * (this.offset + indicatorRadius);
-      const tipY = this.sprite.y + this.direction.y * (this.offset + indicatorRadius);
+      const tipX = this.sprite.x + this.direction.x * (this.offset + indicatorRadius * this.offsetMult);
+      const tipY = this.sprite.y + this.direction.y * (this.offset + indicatorRadius * this.offsetMult);
       this.chargeIndicator.x = tipX;
       this.chargeIndicator.y = tipY;
       
@@ -163,6 +164,7 @@ export class Gun {
       bulletColor = 0xffffff;
     } else {
       // Overcharged: radius stays at 5x base, speed drops to half, and color becomes gold.
+      
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
       bulletColor = 0xFFD700; // gold
@@ -170,8 +172,8 @@ export class Gun {
     }
 
     // Spawn the bullet at the tip of the gun plus an additional offset equal to the bullet radius.
-    const bulletX = originX + this.direction.x * (this.offset + bulletRadius);
-    const bulletY = originY + this.direction.y * (this.offset + bulletRadius);
+    const bulletX = originX + this.direction.x * (this.offset + bulletRadius * this.offsetMult);
+    const bulletY = originY + this.direction.y * (this.offset + bulletRadius * this.offsetMult);
     const bullet = new Bullet(bulletX, bulletY, this.direction.x, this.direction.y, bulletSpeed, bulletRadius, bulletColor, slowdown);
     this.bulletsRef.push(bullet);
     if (this.stageRef) {
