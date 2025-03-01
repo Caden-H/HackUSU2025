@@ -4,6 +4,21 @@ import { vibrateGamepad } from "./vibration";
 import { Player } from "./player";
 import { ParticleSystem } from "./particles"; // Add this import
 
+
+import blastSrc from '../../raw_assets/blast.mp3';
+import pewSrc from '../../raw_assets/pew.mp3';
+import chargeSrc from '../../raw_assets/charge.mp3';
+
+
+const blast = new Audio(blastSrc);
+blast.volume = 0.3;
+
+const pew = new Audio(pewSrc);
+pew.volume = 0.1;
+
+const charge = new Audio(chargeSrc);
+charge.volume = 1;
+
 export class Gun {
   public sprite: PIXI.Sprite;
   private direction = { x: 1, y: 0 };
@@ -138,6 +153,9 @@ export class Gun {
     if (gp) {
       vibrateGamepad(gp, 50, 0.8, 0.4); // Using fixed duration
     }
+    pew.pause()
+    pew.currentTime = 0;
+    pew.play()
   }
 
   /**
@@ -167,6 +185,7 @@ export class Gun {
         this.isCharging = true;
         this.chargeStartTime = now;
         this.hasOvercharged = false; // Reset overcharge flag
+        charge.play()
       }
 
       // Calculate charge duration and factor (0 to 1)
@@ -247,6 +266,8 @@ export class Gun {
     originY: number,
     gp?: Gamepad
   ): void {
+    charge.pause()
+    charge.currentTime = 0;
     const now = performance.now();
     this.lastShotTime = now;
     const chargeDuration = now - this.chargeStartTime;
@@ -266,6 +287,9 @@ export class Gun {
       if (gp) {
         vibrateGamepad(gp, 100, 0.5, 0.2 * (1 + t));
       }
+      pew.pause()
+      pew.currentTime = 0;
+      pew.play()
       bulletSpeed = baseBulletSpeed * (1 + t);
       bulletRadius = baseBulletRadius * (1 + 4 * t);
       bulletColor = 0xffffff;
@@ -274,6 +298,8 @@ export class Gun {
       if (gp) {
         vibrateGamepad(gp, 100, 0.5, 0.5);
       }
+      blast.play()
+
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
       bulletColor = 0xffd700; // gold
