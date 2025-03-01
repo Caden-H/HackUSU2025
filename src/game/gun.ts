@@ -56,8 +56,6 @@ export class Gun {
     // Spawn bullet at offset from the player center
     const bulletX = originX + this.direction.x * this.offset;
     const bulletY = originY + this.direction.y * this.offset;
-    console.log(this.direction.x)
-    console.log(this.direction.y)
 
     const bullet = new Bullet(bulletX, bulletY, this.direction.x, this.direction.y);
     this.bulletsRef.push(bullet);
