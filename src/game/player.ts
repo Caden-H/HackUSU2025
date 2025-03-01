@@ -7,7 +7,7 @@ export class Player {
   public gun: Gun;
   public vx: number = 0;
   public vy: number = 0;
-  public speed: number = 3;
+  public speed: number = 180;
   public radius: number = 20;
   public isDead: boolean = false;
 
@@ -39,13 +39,13 @@ export class Player {
     if (this.isDead) return;
 
     // Update position with velocity (physics update)
-    this.sprite.x += this.vx;
-    this.sprite.y += this.vy;
+    this.sprite.x += this.vx * delta;
+    this.sprite.y += this.vy * delta;
     this.gun.sprite.x = this.sprite.x;
     this.gun.sprite.y = this.sprite.y;
 
     // Apply friction/damping so the bounce effect decays over time.
-    const damping = 0.9;
+    const damping = 1 - 6 * delta;
     this.vx *= damping;
     this.vy *= damping;
 

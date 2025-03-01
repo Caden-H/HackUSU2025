@@ -11,8 +11,8 @@ export class Gun {
   public gameStartTime: number = performance.now();
 
   // Base cooldown in ms (at game start), and minimum cooldown.
-  private baseCooldown: number = 1000;
-  private minCooldown: number = 100;
+  private baseCooldown: number = 500;
+  private minCooldown: number = 500;
   private lastShotTime: number = 0;
 
   // Offset distance for bullet spawn.
@@ -67,8 +67,8 @@ export class Gun {
     this.lastShotTime = now;
 
     // Example: Increase bullet speed over time.
-    const baseBulletSpeed = 5;
-    const bulletSpeedIncreaseRate = 0.001; // speed increase per ms elapsed (tweak as needed)
+    const baseBulletSpeed = 240;
+    const bulletSpeedIncreaseRate = 0.00; // speed increase per ms elapsed (tweak as needed)
     const currentBulletSpeed = baseBulletSpeed + elapsedTime * bulletSpeedIncreaseRate;
 
     // Spawn bullet at offset from the player center.

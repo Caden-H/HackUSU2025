@@ -190,7 +190,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   
           // Calculate an impulse based on the overlap.
           // Adjust the impulseMultiplier to control "bounce power".
-          const impulseMultiplier = 10;
+          const impulseMultiplier = 600;
           const impulse = impulseMultiplier;
   
           // Add impulse to each player's velocity in opposite directions.

@@ -39,8 +39,8 @@ export class Bullet {
     if (this.isExpired) return;
 
     // Move the bullet.
-    this.sprite.x += this.vx;
-    this.sprite.y += this.vy;
+    this.sprite.x += this.vx * delta;
+    this.sprite.y += this.vy * delta;
 
     // Assume a game area of size window.innerHeight.
     const size = window.innerHeight;
