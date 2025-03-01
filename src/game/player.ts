@@ -15,12 +15,14 @@ export class Player {
   public isDead: boolean = false;
   public playerIndex: number = 0;
   private particleSystem: ParticleSystem; // Add this property
+  private arrow_sprite: PIXI.Sprite;
 
   private bulletArray: Bullet[] = [];
 
   constructor(
     body_sprite: PIXI.Sprite,
     gun_sprite: PIXI.Sprite,
+    arrow_sprite: PIXI.Sprite,
     x: number,
     y: number,
     body_color: number,
@@ -38,6 +40,12 @@ export class Player {
     this.particleSystem = particleSystem; // Store the particle system
 
     this.gun = new Gun(gun_sprite, x, y, gun_color, this, particleSystem); // Pass particleSystem to Gun
+    arrow_sprite.scale = new PIXI.Point(5, 5);
+    arrow_sprite.x = 0;
+    arrow_sprite.y = -220;
+    arrow_sprite.rotation = -Math.PI / 2;
+    this.arrow_sprite = arrow_sprite;
+    this.sprite.addChild(arrow_sprite);
   }
 
   public setBulletArray(bullets: Bullet[]) {
@@ -113,6 +121,12 @@ export class Player {
 
   public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
+
+    if (Math.abs(xAxis) < 0.15 && Math.abs(yAxis) < 0.15) {
+      this.arrow_sprite.visible = false;
+    } else {
+      this.arrow_sprite.visible = true;
+    }
 
     if (xAxis !== 0 || yAxis !== 0) {
       const desiredVX = xAxis * this.speed;
