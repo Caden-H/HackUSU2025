@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-type ScoreColor = 'Red' | 'Blue' | 'Green' | 'Yellow';
+type ScoreColor = 'Red' | 'Blue' | "Green" | "Yellow" | "Purple" | "Cyan" | "Orange";
 
 export class WinScreen {
   private victoryText: PIXI.Text;
@@ -59,6 +59,9 @@ export class WinScreen {
       Red: new PIXI.TextStyle({ fontSize: 48, fill: 0xff0000, align: 'center' }),
       Green: new PIXI.TextStyle({ fontSize: 48, fill: 0x00ff00, align: 'center' }),
       Yellow: new PIXI.TextStyle({ fontSize: 48, fill: 0xffff00, align: 'center' }),
+      Purple: new PIXI.TextStyle({ fontSize: 48, fill: 0xff00ff, align: 'center' }),
+      Cyan: new PIXI.TextStyle({ fontSize: 48, fill: 0x00ffff, align: 'center' }),
+      Orange: new PIXI.TextStyle({ fontSize: 48, fill: 0xffa500, align: 'center' }),
     };
     const dashStyle = new PIXI.TextStyle({ fontSize: 48, fill: 0xffffff, align: 'center' });
 
@@ -125,10 +128,13 @@ export class WinScreen {
       this.scores[winner] = (this.scores[winner] || 0) + 1;
       this.victoryText.text = `${winner} Wins!`;
       const colorMapping: Record<ScoreColor, number> = {
-        Red: 0xff0000,
-        Blue: 0x0000ff,
-        Green: 0x00ff00,
-        Yellow: 0xffff00,
+        Red: 0xff4827,
+        Blue: 0x1180ff,
+        Green: 0x2aff23,
+        Yellow: 0xfff23b,
+        Purple: 0xe523ff,
+        Cyan: 0x23ffa3,
+        Orange: 0xffa63f,
       };
       this.victoryText.style.fill = colorMapping[winner] || 0xffffff;
     }

@@ -119,7 +119,7 @@ export class Gun {
       const indicatorColor = t >= 1 ? 0xFFD700 : 0xffffff;
 
       if (gp && chargeDuration < this.maxCharge) {
-        vibrateGamepad(gp, 10 * t, 0.8, 0.4); // Using fixed duration instead of currentCooldown
+        vibrateGamepad(gp, 10, 0.5, 0.2); // Using fixed duration instead of currentCooldown
       }
       
       // Update the charge indicator graphic.
