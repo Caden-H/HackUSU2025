@@ -6,12 +6,12 @@ export class Bullet {
 
   public vx: number;
   public vy: number;
-  public speed: number = 5;
-
+  public speed: number;
   private bounces: number = 0;
   private maxBounces: number = 2;
 
-  constructor(x: number, y: number, dx: number, dy: number) {
+  // Accept speed as a parameter (default to 5 if not provided)
+  constructor(x: number, y: number, dx: number, dy: number, speed: number = 5) {
     this.sprite = new PIXI.Graphics();
     this.sprite.beginFill(0xffffff);
     this.sprite.drawCircle(0, 0, 5);
@@ -20,7 +20,7 @@ export class Bullet {
     this.sprite.x = x;
     this.sprite.y = y;
 
-    // Normalize direction so speed is consistent
+    // Normalize the direction vector.
     const mag = Math.sqrt(dx * dx + dy * dy);
     if (mag !== 0) {
       dx /= mag;
@@ -30,6 +30,7 @@ export class Bullet {
       dy = 0;
     }
 
+    this.speed = speed;
     this.vx = dx * this.speed;
     this.vy = dy * this.speed;
   }
@@ -37,14 +38,14 @@ export class Bullet {
   public update(delta: number): void {
     if (this.isExpired) return;
 
-    // Move the bullet
+    // Move the bullet.
     this.sprite.x += this.vx;
     this.sprite.y += this.vy;
 
-    // We'll assume a game area the size of window.innerHeight
+    // Assume a game area of size window.innerHeight.
     const size = window.innerHeight;
 
-    // Bounce left/right
+    // Bounce off left/right.
     if (this.sprite.x < 0) {
       this.sprite.x = 0;
       this.vx *= -1;
@@ -55,7 +56,7 @@ export class Bullet {
       this.bounces++;
     }
 
-    // Bounce top/bottom
+    // Bounce off top/bottom.
     if (this.sprite.y < 0) {
       this.sprite.y = 0;
       this.vy *= -1;
@@ -66,7 +67,7 @@ export class Bullet {
       this.bounces++;
     }
 
-    // If we've bounced too many times, expire
+    // Expire the bullet after too many bounces.
     if (this.bounces > this.maxBounces) {
       this.isExpired = true;
     }

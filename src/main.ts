@@ -113,11 +113,13 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       player.sprite.y = pos.y;
       player.gun.sprite.x = pos.x;
       player.gun.sprite.y = pos.y;
+      player.gun.gameStartTime = performance.now();
       player.isDead = false;
       player.sprite.visible = true;
       player.gun.sprite.visible = true;
     });
     winScreen.reset();
+
   }
 
   function applyDeadZone(ax: number, ay: number, deadZone: number = 0.1) {

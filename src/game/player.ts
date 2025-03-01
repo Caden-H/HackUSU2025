@@ -74,7 +74,6 @@ export class Player {
     if (xAxis !== 0 || yAxis !== 0) {
       const desiredVX = xAxis * this.speed;
       const desiredVY = yAxis * this.speed;
-      console.log(xAxis, yAxis, desiredVX, desiredVY)
       
       // Calculate current velocity magnitude.
       const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
