@@ -49,10 +49,10 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
 
   const players: Player[] = [];
   const initialPositions: { x: number; y: number }[] = [];
-
-  const fixedColors = [0x0000ff, 0xff0000, 0x00ff00, 0xffff00];
+//#ffa63f
+  const fixedColors = [0x1180ff, 0xff4827, 0x2aff23, 0xfff23b, 0xe523ff, 0x23ffa3, 0xffa63f];
   const center = app.canvas.width / 2;
-  const radius = 100;
+  const radius = 100 * Math.max(1,(2 * numPlayers/10));
 
   // Helper function to generate a random color (for players beyond the first four)
   function randomColor() {
