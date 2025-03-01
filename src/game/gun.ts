@@ -19,7 +19,7 @@ export class Gun {
   private lastShotTime: number = 0;
 
   // The offset distance for bullet spawn
-  private offset: number = 33;
+  private offset: number = 30;
 
   /**
    * Provide an array of bullets and the stage, so we can spawn new bullets.

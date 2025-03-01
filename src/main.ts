@@ -33,7 +33,8 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   window.addEventListener('resize', updateCanvasPosition);
   updateCanvasPosition();
 
-  const winScreen = new WinScreen(app);
+  const numPlayers = 2;
+  const winScreen = new WinScreen(app, numPlayers);
 
   const player_body_texture = await PIXI.Assets.load({ src: bodySrc, data: { resolution: 10 } });
   const player_gun_texture = await PIXI.Assets.load({ src: gunSrc, data: { resolution: 10 } });
@@ -41,7 +42,6 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   const players: Player[] = [];
   const initialPositions: { x: number; y: number }[] = [];
 
-  const numPlayers = 2;
   const fixedColors = [0x0000ff, 0xff0000, 0x00ff00, 0xffff00];
   const center = app.canvas.width / 2;
   const radius = 100;
