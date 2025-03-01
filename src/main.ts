@@ -5,12 +5,12 @@ import { WinScreen } from "./game/winscreen";
 import { Wall } from "./game/wall";
 import { RandomWall } from "./game/randomwall";
 import { vibrateGamepad } from "./game/vibration";
+import { ParticleSystem } from "./game/particles";
 
 import bodySrc from "../raw_assets/TankBody.svg?url";
 import gunSrc from "../raw_assets/TankGun.svg?url";
 
 (async () => {
-  // Helper to ensure the canvas is a square of size window.innerHeight
   function getSquareSize() {
     return window.innerHeight;
   }
@@ -25,6 +25,9 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
     resolution: window.devicePixelRatio || 1,
   });
   document.body.appendChild(app.canvas);
+
+  // Create particle system
+  const particleSystem = new ParticleSystem(app);
 
   // Position the canvas absolutely at the top and center it horizontally
   app.canvas.style.position = "absolute";
@@ -167,8 +170,18 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
       gunSprite.anchor.set(0.5);
       app.stage.addChild(gunSprite);
 
-      // Pass an index i if your Player constructor needs it for vibration, etc.
-      const player = new Player(bodySprite, gunSprite, x, y, playerColor, gunColor, i);
+      // Pass the particleSystem to the Player constructor
+      const player = new Player(
+        bodySprite,
+        gunSprite,
+        x,
+        y,
+        playerColor,
+        gunColor,
+        i,
+        particleSystem
+      );
+
       (player as any).color = playerColor;
       players.push(player);
     }
@@ -295,6 +308,9 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
     if (gameState === "start") {
       return;
     }
+
+    // Update particle system
+    particleSystem.update(delta.elapsedMS / 1000);
 
     // Now we're in "play" mode
     for (const player of players) {
