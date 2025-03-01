@@ -15,6 +15,7 @@ interface Particle {
   maxLife: number;
   sprite: PIXI.Sprite;
   type: ParticleType;
+  color?: number; // Optional color property for tinting
 }
 
 export class ParticleSystem {
@@ -38,19 +39,11 @@ export class ParticleSystem {
   }
 
   private createExplosionTexture(): PIXI.Texture {
-    const size = 32;
+    const size = 24;
     const graphics = new PIXI.Graphics();
 
-    // Create a gradient for explosion particles
-    graphics.beginFill(0xffff00, 0.8); // Core - bright yellow
-    graphics.drawCircle(size / 2, size / 2, (size / 2) * 0.4);
-    graphics.endFill();
-
-    graphics.beginFill(0xff8800, 0.6); // Mid - orange
-    graphics.drawCircle(size / 2, size / 2, (size / 2) * 0.7);
-    graphics.endFill();
-
-    graphics.beginFill(0xff3300, 0.3); // Edge - red-orange
+    // Create a simple flat shape for explosions - just a circle
+    graphics.beginFill(0xffffff, 0.8); // Use white so we can tint it later
     graphics.drawCircle(size / 2, size / 2, size / 2);
     graphics.endFill();
 
@@ -63,7 +56,7 @@ export class ParticleSystem {
 
     // Create a flat smoke puff (simpler, vector-like design)
     graphics.beginFill(0xeeeeee, 0.5); // Use a single flat color with moderate opacity
-    
+
     // Simple circle for vector look
     graphics.drawCircle(size / 2, size / 2, size / 2);
     graphics.endFill();
@@ -71,18 +64,29 @@ export class ParticleSystem {
     return this.app.renderer.generateTexture(graphics);
   }
 
-  // Create explosion at specific coordinates
+  // Create explosion at specific coordinates with tank color
   createExplosion(
     x: number,
     y: number,
     size: number = 1,
-    color: number = 0xffff00
+    color: number = 0xffffff
   ): void {
-    const particleCount = 30;
+    // Increase particle count for more consistent shape
+    const particleCount = 36;
 
     for (let i = 0; i < particleCount; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 1 + Math.random() * 3;
+
+      // Reduce speed by ~50% so particles don't go as far
+      const speed = 0.5 + Math.random() * 1.5;
+
+      // Slightly randomize the particle color for variation
+      // Mix in some white to brighten the center particles
+      const isCore = Math.random() > 0.7;
+      const particleColor = isCore ? 0xffffff : color;
+
+      // Create with different opacity based on position
+      const alpha = isCore ? 0.9 : 0.7;
 
       this.createParticle({
         x,
@@ -90,37 +94,68 @@ export class ParticleSystem {
         vx: Math.cos(angle) * speed * size,
         vy: Math.sin(angle) * speed * size,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.2,
-        alpha: 0.8,
-        scale: (0.5 + Math.random() * 0.5) * size,
-        life: 1,
-        maxLife: 1 + Math.random() * 0.5,
+        rotationSpeed: (Math.random() - 0.5) * 0.05, // Even less rotation
+        alpha: alpha,
+        // Make particles slightly smaller overall
+        scale: (0.2 + Math.random() * 0.3) * size,
+        // Keep them visible slightly longer since they move slower
+        life: 0.7 + Math.random() * 0.4,
+        maxLife: 0.9 + Math.random() * 0.5,
         type: "explosion",
+        color: particleColor,
+      });
+    }
+
+    // Add a central burst of smaller particles for a more intense core
+    for (let i = 0; i < 12; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      // Very short range for these particles
+      const speed = 0.2 + Math.random() * 0.5;
+
+      this.createParticle({
+        x,
+        y,
+        vx: Math.cos(angle) * speed * size,
+        vy: Math.sin(angle) * speed * size,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        alpha: 1.0, // Full opacity
+        scale: (0.15 + Math.random() * 0.2) * size, // Even smaller
+        life: 0.5 + Math.random() * 0.3, // Shorter life
+        maxLife: 0.7 + Math.random() * 0.4,
+        type: "explosion",
+        color: 0xffffff, // Always white for the core
       });
     }
   }
 
   // Create gun smoke at specific coordinates with direction
-  createGunSmoke(x: number, y: number, dirX: number, dirY: number, isCharged: boolean = false): void {
+  createGunSmoke(
+    x: number,
+    y: number,
+    dirX: number,
+    dirY: number,
+    isCharged: boolean = false
+  ): void {
     // More particles for charged shots
     const particleCount = isCharged ? 12 : 5;
-    
+
     // Larger spread for charged shots
     const spread = isCharged ? 0.6 : 0.3;
-    
+
     // Longer life for charged shot smoke
     const baseLife = isCharged ? 1.5 : 0.8;
 
     for (let i = 0; i < particleCount; i++) {
       // Randomize direction slightly
       const angle = Math.atan2(dirY, dirX) + (Math.random() - 0.5) * spread;
-      
+
       // Faster speed for charged shots
       const speed = 0.5 + Math.random() * (isCharged ? 1.5 : 1);
-      
+
       // Larger scale for charged shots
-      const scale = isCharged 
-        ? 0.5 + Math.random() * 0.4 
+      const scale = isCharged
+        ? 0.5 + Math.random() * 0.4
         : 0.3 + Math.random() * 0.2;
 
       this.createParticle({
@@ -147,6 +182,11 @@ export class ParticleSystem {
     sprite.rotation = options.rotation;
     sprite.alpha = options.alpha;
     sprite.scale.set(options.scale);
+
+    // Apply tint if color is provided
+    if (options.color !== undefined) {
+      sprite.tint = options.color;
+    }
 
     const particle: Particle = {
       ...options,
@@ -208,6 +248,11 @@ export class ParticleSystem {
         // Smoke expands as it rises
         const scale = p.scale * (1 + 0.8 * (1 - normalizedLifeRatio));
         p.sprite.scale.set(scale);
+      }
+
+      // Apply tint based on color
+      if (p.color) {
+        p.sprite.tint = p.color;
       }
     }
   }

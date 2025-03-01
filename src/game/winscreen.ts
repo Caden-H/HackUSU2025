@@ -28,6 +28,8 @@ export class WinScreen {
       fill: 0xffffff,
       align: 'center',
       fontWeight: 'bold',
+      fontFamily: '"Oswald", "Arial Black", "Helvetica Neue", sans-serif',
+      // letterSpacing: 3, // Add spacing between letters (value in pixels)
     });
     this.victoryText.anchor.set(0.5);
     this.victoryText.x = app.screen.width / 2;
@@ -139,11 +141,11 @@ export class WinScreen {
     this.gameOver = true;
 
     if (winner === 'Draw') {
-      this.victoryText.text = 'Draw!';
+      this.victoryText.text = 'DRAW!';
       this.victoryText.style.fill = 0xffffff;
     } else {
       this.scores[winner] = (this.scores[winner] || 0) + 1;
-      this.victoryText.text = `${winner} Wins!`;
+      this.victoryText.text = `${winner.toUpperCase()} WINS!`;
 
       const colorMapping: Record<ScoreColor, number> = {
         Red: 0xff4827,
