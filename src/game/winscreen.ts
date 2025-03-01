@@ -128,10 +128,10 @@ export class WinScreen {
       this.scores[winner] = (this.scores[winner] || 0) + 1;
       this.victoryText.text = `${winner} Wins!`;
       const colorMapping: Record<ScoreColor, number> = {
-        Red: 0xff0000,
-        Blue: 0x0000ff,
-        Green: 0x00ff00,
-        Yellow: 0xffff00,
+        Red: 0xff4827,
+        Blue: 0x1180ff,
+        Green: 0x2aff23,
+        Yellow: 0xfff23b,
         Purple: 0xe523ff,
         Cyan: 0x23ffa3,
         Orange: 0xffa63f,
