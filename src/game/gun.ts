@@ -36,6 +36,9 @@ export class Gun {
 
   private particleSystem: ParticleSystem; // Add this property
 
+  // Add this property to track overcharge state
+  private hasOvercharged: boolean = false;
+
   /**
    * @param sprite The gun sprite.
    * @param x Initial x position.
@@ -163,10 +166,37 @@ export class Gun {
         // Start charging on the first frame the button is held.
         this.isCharging = true;
         this.chargeStartTime = now;
+        this.hasOvercharged = false; // Reset overcharge flag
       }
+
       // Calculate charge duration and factor (0 to 1)
       const chargeDuration = now - this.chargeStartTime;
       const t = Math.min(1, chargeDuration / this.maxCharge);
+
+      // Check if we've just reached overcharge and haven't emitted the warning smoke yet
+      if (chargeDuration >= this.maxCharge && !this.hasOvercharged) {
+        // Trigger overcharge warning smoke puff
+        const smokePosX = originX + this.direction.x * this.offset;
+        const smokePosY = originY + this.direction.y * this.offset;
+
+        // Create a burst of smoke to indicate overcharge
+        for (let i = 0; i < 15; i++) {
+          this.particleSystem.createGunSmoke(
+            smokePosX,
+            smokePosY,
+            this.direction.x,
+            this.direction.y,
+            true
+          );
+        }
+
+        // Strong vibration to indicate overcharge
+        if (gp) {
+          vibrateGamepad(gp, 200, 1.0, 1.0);
+        }
+
+        this.hasOvercharged = true; // Set flag so we don't emit smoke again
+      }
 
       // Use the same base radius as normal shot.
       const baseBulletRadius = 5;
@@ -227,8 +257,11 @@ export class Gun {
     const baseBulletRadius = 5;
     let slowdown = 0.2;
 
-    if (chargeDuration < this.maxCharge) {
-      // Linear interpolation: at 0 ms, shot = base values; at 3000ms, shot = 2x base speed and 5x base radius.
+    // Is this an overcharged shot?
+    const isOvercharged = chargeDuration >= this.maxCharge;
+
+    if (!isOvercharged) {
+      // Normal charged shot (not overcharged)
       const t = chargeDuration / this.maxCharge; // 0 to 1
       if (gp) {
         vibrateGamepad(gp, 100, 0.5, 0.2 * (1 + t));
@@ -275,22 +308,23 @@ export class Gun {
       this.stageRef.addChild(bullet.sprite);
     }
 
-    // After creating the bullet, add smoke effect (larger for charged shots)
-    const smokePosX = originX + this.direction.x * this.offset;
-    const smokePosY = originY + this.direction.y * this.offset;
+    // Only create smoke for normal charged shots, NOT for overcharged shots
+    if (!isOvercharged) {
+      // After creating the bullet, add smoke effect
+      const smokePosX = originX + this.direction.x * this.offset;
+      const smokePosY = originY + this.direction.y * this.offset;
 
-    // Create smoke for charged shots
-    const isFullyCharged = chargeDuration >= this.maxCharge;
-    // Create multiple smoke particles in a burst pattern
-    const particleCount = isFullyCharged ? 3 : 2;
-    for (let i = 0; i < particleCount; i++) {
-      this.particleSystem.createGunSmoke(
-        smokePosX,
-        smokePosY,
-        this.direction.x,
-        this.direction.y,
-        true // mark as charged
-      );
+      // Create smoke for charged shots
+      const particleCount = 3;
+      for (let i = 0; i < particleCount; i++) {
+        this.particleSystem.createGunSmoke(
+          smokePosX,
+          smokePosY,
+          this.direction.x,
+          this.direction.y,
+          true // mark as charged
+        );
+      }
     }
   }
 }
