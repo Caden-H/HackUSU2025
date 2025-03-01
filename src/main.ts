@@ -215,7 +215,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     // Update bullets & remove expired ones
     for (let i = bullets.length - 1; i >= 0; i--) {
       const bullet = bullets[i];
-      bullet.update(delta.elapsedMS / 1000);
+      bullet.update(delta.elapsedMS / 1000, boundary);
       if (bullet.isExpired) {
         app.stage.removeChild(bullet.sprite);
         bullets.splice(i, 1);

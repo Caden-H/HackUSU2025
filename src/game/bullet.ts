@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Wall } from './wall';
 
 export class Bullet {
   public sprite: PIXI.Graphics;
@@ -57,13 +58,15 @@ export class Bullet {
     this.slowdown = slowdown;
   }
 
-  public update(delta: number): void {
+  /**
+   * Update method now accepts a boundary parameter.
+   */
+  public update(delta: number, boundary: Wall): void {
     if (this.isExpired) return;
 
-    // If in pre-explosion (flashing) state, update that timer and flash.
+    // --- Pre-explosion (flashing) state ---
     if (this.preExplosionActive && !this.explosionTriggered) {
       this.preExplosionElapsed += delta;
-      // Flashing effect: modulate alpha using a sine wave.
       const flashFrequency = 5; // flashes per second (adjust as needed)
       this.sprite.alpha = (Math.sin(2 * Math.PI * flashFrequency * this.preExplosionElapsed) + 1) / 2;
       if (this.preExplosionElapsed >= this.preExplosionDelay) {
@@ -72,7 +75,7 @@ export class Bullet {
       return;
     }
 
-    // If explosion has already been triggered, update explosion timer.
+    // --- Explosion state ---
     if (this.explosionTriggered) {
       this.explosionElapsed += delta;
       if (this.explosionElapsed >= this.explosionDuration) {
@@ -81,39 +84,56 @@ export class Bullet {
       return;
     }
 
-    // Normal movement.
+    // --- Normal Movement ---
+    // Update position.
     this.sprite.x += this.vx * delta;
     this.sprite.y += this.vy * delta;
 
-    // Bounce off walls.
-    const size = window.innerHeight;
-    if (this.sprite.x < 0) {
-      this.sprite.x = 0;
-      this.vx *= -1;
-    } else if (this.sprite.x > size) {
-      this.sprite.x = size;
-      this.vx *= -1;
-    }
-    if (this.sprite.y < 0) {
-      this.sprite.y = 0;
-      this.vy *= -1;
-    } else if (this.sprite.y > size) {
-      this.sprite.y = size;
-      this.vy *= -1;
+    // Check if bullet is outside the boundary.
+    const { inside, closestSegment } = boundary.contains(this.sprite.x, this.sprite.y);
+    if (!inside) {
+      // Teleport bullet to the closest point on the wall.
+      const nearest = boundary.nearestPoint(this.sprite.x, this.sprite.y);
+      this.sprite.x = nearest.x;
+      this.sprite.y = nearest.y;
+
+      // Reflect the velocity relative to the wall's angle.
+      // Compute the segment vector from the closest segment.
+      const segX = closestSegment.p2.x - closestSegment.p1.x;
+      const segY = closestSegment.p2.y - closestSegment.p1.y;
+      // A candidate normal is (-segY, segX).
+      let nx = -segY;
+      let ny = segX;
+      const nMag = Math.sqrt(nx * nx + ny * ny);
+      if (nMag !== 0) {
+        nx /= nMag;
+        ny /= nMag;
+      }
+      // Determine correct orientation:
+      // Use the midpoint of the segment and the bullet's position.
+      const midX = (closestSegment.p1.x + closestSegment.p2.x) / 2;
+      const midY = (closestSegment.p1.y + closestSegment.p2.y) / 2;
+      const dX = this.sprite.x - midX;
+      const dY = this.sprite.y - midY;
+      if (nx * dX + ny * dY < 0) {
+        nx = -nx;
+        ny = -ny;
+      }
+      // Reflect: new_v = v - 2*(v dot n)*n.
+      const dot = this.vx * nx + this.vy * ny;
+      this.vx = this.vx - 2 * dot * nx;
+      this.vy = this.vy - 2 * dot * ny;
     }
 
-    // Apply slowdown to the velocity.
+    // Apply slowdown.
     this.vx *= (1 - this.slowdown * delta);
     this.vy *= (1 - this.slowdown * delta);
 
     // Check current speed.
     const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-    // When speed falls below threshold and not already in pre-explosion mode,
-    // start the pre-explosion (flashing) phase.
     if (currentSpeed < 60 && !this.preExplosionActive) {
       this.preExplosionActive = true;
       this.preExplosionElapsed = 0;
-      // Optionally ensure full opacity at the start.
       this.sprite.alpha = 1;
     }
   }
@@ -132,7 +152,7 @@ export class Bullet {
     // Begin explosion mode.
     this.explosionTriggered = true;
     this.explosionElapsed = 0;
-    // Reset alpha to 1.
+    // Reset alpha.
     this.sprite.alpha = 1;
   }
 }
