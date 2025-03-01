@@ -21,4 +21,20 @@ export class Wall {
         });
         return gfx;
     }
+
+    // Detect if point is inside the wall
+    public contains(x: number, y: number): boolean {
+        let inside = false;
+        for (let i = 0, j = this.points.length - 1; i < this.points.length; j = i++) {
+            const xi = this.points[i].x;
+            const yi = this.points[i].y;
+            const xj = this.points[j].x;
+            const yj = this.points[j].y;
+
+            const intersect = ((yi > y) !== (yj > y)) &&
+                (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
+    }
 }
