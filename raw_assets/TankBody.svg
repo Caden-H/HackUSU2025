@@ -18,16 +18,16 @@
     <g
        id="g45"
        transform="translate(-19.723256,-9.9412994)"
-       style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1">
+       style="fill:#464646;fill-opacity:1;stroke:#3a3a3a;stroke-opacity:1">
       <use
          x="0"
          y="0"
          xlink:href="#rect25"
          id="use27"
          transform="translate(-55.809879)"
-         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1" />
+         style="fill:#464646;fill-opacity:1;stroke:#3a3a3a;stroke-opacity:1" />
       <rect
-         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#464646;fill-opacity:1;stroke:#3a3a3a;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
          id="rect25"
          width="19.958551"
          height="62.712196"
@@ -39,16 +39,16 @@
     <g
        id="g48"
        transform="translate(-1.5424743,-5.4123497)"
-       style="fill:#0fb6ff;fill-opacity:1">
+       style="fill:#878787;fill-opacity:1">
       <ellipse
-         style="font-variation-settings:normal;opacity:1;fill:#0070a5;fill-opacity:1;stroke:#008ac7;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         style="font-variation-settings:normal;opacity:1;fill:#878787;fill-opacity:1;stroke:#646464;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
          id="path27"
          cx="86.578522"
          cy="161.98289"
          rx="30.62842"
          ry="36.813007" />
       <circle
-         style="fill:#008ac7;fill-opacity:1;stroke:none;stroke-width:6.85781;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#646464;fill-opacity:1;stroke:none;stroke-width:6.85781;stroke-dasharray:none;stroke-opacity:1"
          id="circle46"
          cx="86.735092"
          cy="172.07108"
