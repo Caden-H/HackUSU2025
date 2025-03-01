@@ -9,7 +9,7 @@ export class Bullet {
   private speed: number = 5;
 
   private bounces: number = 0;
-  private maxBounces: number = 3;
+  private maxBounces: number = 2;
 
   constructor(x: number, y: number, dx: number, dy: number) {
     this.sprite = new PIXI.Graphics();

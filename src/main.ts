@@ -44,9 +44,6 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
 
   
   // Player
-  const player_gun_texture = await PIXI.Assets.load({src: gunSrc, data: {resolution: 10}});
-
-
   const player_body_texture = await PIXI.Assets.load({src: bodySrc, data: {resolution: 10}});
   const p1_body_sprite = PIXI.Sprite.from(player_body_texture);
   p1_body_sprite.anchor.set(0.5);
@@ -55,6 +52,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   p2_body_sprite.anchor.set(0.5);
   app.stage.addChild(p2_body_sprite);
 
+  const player_gun_texture = await PIXI.Assets.load({src: gunSrc, data: {resolution: 10}});
   const p1_gun_sprite = PIXI.Sprite.from(player_gun_texture);
   p1_gun_sprite.anchor.set(0.5);
   app.stage.addChild(p1_gun_sprite);
@@ -62,9 +60,39 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   p2_gun_sprite.anchor.set(0.5);
   app.stage.addChild(p2_gun_sprite);
 
+  const centerY = window.innerHeight / 2 
+  const centerX = window.innerWidth / 2
+  const center = app.canvas.width / 2;
+  console.log(centerX, centerY, center)
   // Create two players
-  const player1 = new Player(p1_body_sprite, p1_gun_sprite, 100, 100, 0xff0000, 0x0000ff);  // Red
-  const player2 = new Player(p2_body_sprite, p2_gun_sprite, 700, 500, 0x0000ff, 0xff0000);  // Blue
+  const player1 = new Player(p1_body_sprite, p1_gun_sprite, center - 100, center - 100, 0xff0000, 0x0000ff);  // Red
+  const player2 = new Player(p2_body_sprite, p2_gun_sprite, center + 100, center + 100, 0x0000ff, 0xff0000);  // Blue
+
+  function reset() {
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+      app.stage.removeChild(bullet.sprite);
+      bullets.splice(i, 1);
+    }
+
+    player1.sprite.x = centerX - 100;
+    player1.sprite.y = centerX - 100;
+    player1.gun.sprite.x = centerX - 100;
+    player1.gun.sprite.y = centerX - 100;
+    player1.isDead = false;
+    player1.sprite.visible = true;
+    player1.gun.sprite.visible = true;
+    
+    player2.sprite.x = centerX + 100;
+    player2.sprite.y = centerX + 100;
+    player2.gun.sprite.x = centerX + 100;
+    player2.gun.sprite.y = centerX + 100;
+    player2.isDead = false;
+    player2.sprite.visible = true;
+    player2.gun.sprite.visible = true;
+  }
+
+
 
   // Shared bullet array
   let bullets: Bullet[] = [];
@@ -134,6 +162,12 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       if (gp2.buttons[4]?.pressed || gp2.buttons[5]?.pressed ||
           gp2.buttons[6]?.pressed || gp2.buttons[7]?.pressed) {
         player1.gun.shoot(player1.sprite.x, player1.sprite.y);
+      }
+    }
+
+    if (gp1 && gp2) {
+      if ((player1.isDead || player2.isDead) && (gp1.buttons[0]?.pressed || gp2.buttons[0]?.pressed)) {
+        reset()
       }
     }
   }
