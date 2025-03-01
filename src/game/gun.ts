@@ -133,7 +133,7 @@ export class Gun {
     } else {
       // If the button was released while charging, fire the charged shot.
       if (this.isCharging) {
-        this.releaseChargeShot(originX, originY);
+        this.releaseChargeShot(originX, originY, gp);
         this.isCharging = false;
       }
       // Hide and clear the charge indicator.
@@ -145,7 +145,7 @@ export class Gun {
   /**
    * Fire a charged shot based on how long the charge button was held.
    */
-  private releaseChargeShot(originX: number, originY: number): void {
+  private releaseChargeShot(originX: number, originY: number, gp?: Gamepad): void {
     const now = performance.now();
     this.lastShotTime = now;
     const chargeDuration = now - this.chargeStartTime;
@@ -159,12 +159,15 @@ export class Gun {
     if (chargeDuration < this.maxCharge) {
       // Linear interpolation: at 0 ms, shot = base values; at 3000ms, shot = 2x base speed and 5x base radius.
       const t = chargeDuration / this.maxCharge; // 0 to 1
+
+      if (gp) {vibrateGamepad(gp, 50, 0.5, 0.2 * (1 + t))}
       bulletSpeed = baseBulletSpeed * (1 + t);
       bulletRadius = baseBulletRadius * (1 + 4 * t);
       bulletColor = 0xffffff;
     } else {
       // Overcharged: radius stays at 5x base, speed drops to half, and color becomes gold.
       
+      if (gp) {vibrateGamepad(gp, 50, 0.5, 0.4)}
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
       bulletColor = 0xFFD700; // gold
