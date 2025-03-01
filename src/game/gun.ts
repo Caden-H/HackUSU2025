@@ -33,6 +33,7 @@ export class Gun {
     // Create the charge indicator (initially invisible)
     this.chargeIndicator = new PIXI.Graphics();
     this.chargeIndicator.visible = false;
+    this.setDirection(1, 0)
   }
 
   public setBulletArray(bullets: Bullet[], stage: PIXI.Container) {
@@ -141,7 +142,7 @@ export class Gun {
     let bulletColor: number;
     const baseBulletSpeed = 240;
     const baseBulletRadius = 5;
-    let maxBounces = 2;
+    let slowdown = 0.2;
 
     if (chargeDuration < this.maxCharge) {
       // Linear interpolation: at 0 ms, shot = base values; at 3000ms, shot = 2x base speed and 5x base radius.
@@ -154,13 +155,13 @@ export class Gun {
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
       bulletColor = 0xFFD700; // gold
-      maxBounces = 10;
+      slowdown = 0.03;
     }
 
     // Spawn the bullet at the tip of the gun plus an additional offset equal to the bullet radius.
     const bulletX = originX + this.direction.x * (this.offset + bulletRadius);
     const bulletY = originY + this.direction.y * (this.offset + bulletRadius);
-    const bullet = new Bullet(bulletX, bulletY, this.direction.x, this.direction.y, bulletSpeed, bulletRadius, bulletColor, maxBounces);
+    const bullet = new Bullet(bulletX, bulletY, this.direction.x, this.direction.y, bulletSpeed, bulletRadius, bulletColor, slowdown);
     this.bulletsRef.push(bullet);
     if (this.stageRef) {
       this.stageRef.addChild(bullet.sprite);
