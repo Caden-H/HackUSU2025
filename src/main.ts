@@ -18,9 +18,11 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   // Create a Pixi Application
   const app = new PIXI.Application();
   await app.init({
+    antialias: true,
     width: getSquareSize(),
     height: getSquareSize(),
     backgroundColor: 0x333333,
+    resolution: window.devicePixelRatio || 1,
   });
   document.body.appendChild(app.canvas);
 
