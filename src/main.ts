@@ -137,22 +137,9 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       const gp = gamepads[i];
       if (gp) {
         // Movement: player i uses left stick for their own movement.
-        let [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
-        const targetPoint = new PIXI.Point(players[i].sprite.x + moveX, players[i].sprite.y + moveY);
-        const { inside } = boundary.contains(targetPoint.x, targetPoint.y);
-        const nearestPoint = boundary.nearestPoint(
-          targetPoint.x,
-          targetPoint.y
-        );
+        const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1])
 
-        let shouldRotate = true;
-        if(!inside) {
-          moveX = nearestPoint.x - players[i].sprite.x;
-          moveY = nearestPoint.y - players[i].sprite.y;
-          shouldRotate = false;
-        }
-
-        players[i].move(moveX, moveY, shouldRotate);
+        players[i].move(moveX, moveY);
 
         // Gun control: player i uses right stick to control next player's gun.
         const nextIndex = (i + 1) % players.length;
@@ -190,7 +177,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
 
     // Update all players
     for (const player of players) {
-      player.update(delta.elapsedMS / 1000);
+      player.update(delta.elapsedMS / 1000, boundary);
     }
 
     // Loop over every unique pair of players.

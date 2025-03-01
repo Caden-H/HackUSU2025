@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Wall} from './wall'
 import { Gun } from './gun';
 import { Bullet } from './bullet';
 
@@ -35,12 +36,27 @@ export class Player {
     this.bulletArray = bullets;
   }
 
-  public update(delta: number) {
+  public update(delta: number, boundary: Wall) {
     if (this.isDead) return;
 
+    let moveX = this.vx * delta;
+    let moveY = this.vy * delta;
+
+    const targetPoint = new PIXI.Point(this.sprite.x + moveX, this.sprite.y + moveY);
+    const { inside } = boundary.contains(targetPoint.x, targetPoint.y);
+    const nearestPoint = boundary.nearestPoint(
+      targetPoint.x,
+      targetPoint.y
+    );
+
+    if(!inside) {
+      moveX = nearestPoint.x - this.sprite.x;
+      moveY = nearestPoint.y - this.sprite.y;
+    }
+
     // Update position with velocity (physics update)
-    this.sprite.x += this.vx * delta;
-    this.sprite.y += this.vy * delta;
+    this.sprite.x += moveX;
+    this.sprite.y += moveY;
     this.gun.sprite.x = this.sprite.x;
     this.gun.sprite.y = this.sprite.y;
 
@@ -69,7 +85,7 @@ export class Player {
   }
 
 
-  public move(xAxis: number, yAxis: number, shouldRotate: boolean = true) {
+  public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
 
     if (xAxis !== 0 || yAxis !== 0) {
@@ -90,9 +106,7 @@ export class Player {
       }
 
       // Update rotation to face the input direction.
-      if (shouldRotate) {
-        this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
-      }
+      this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
     } else {
         const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
         if (currentVelMag <= this.speed) {
