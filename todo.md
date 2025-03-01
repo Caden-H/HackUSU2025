@@ -1,10 +1,16 @@
-Clean up visuals- maybe have black background come to wall edges somehow?
-Add music/SFX
-Particles in various places- look into pixi's ParticleContainer for this, for performance reasons.
-Better bullet images could be nice
-Come up with name
-Test with more players/add a way to select number of players (rn just change numPlayers in main.ts, should work with up to 4)
-More maps would be cool
+- Scale number of players based on connected controller count
+- Clean up visuals- maybe have black background come to wall edges somehow?
+- Add music/SFX
+- Caden will add Particles in various places- look into pixi's ParticleContainer for this, for performance reasons.
+- Better bullet images could be nice
+- Come up with name
+    - Split Fire
+    - Mind Your Fire
+    - Cross Tanks
+    - Lost in Fire
+    - Mixed Battalion
+    - Fire Divided
+- More maps would be cool
 
 tutorial? gotta get players to look at their tank, easy to get distracted by gun lol
 
