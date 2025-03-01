@@ -250,7 +250,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
     // Win condition: if only one player is still alive, declare them the winner
     const alivePlayers = players.filter((player) => !player.isDead);
     if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
-      console.log("Winner:", alivePlayers[0]);
+      // console.log("Winner:", alivePlayers[0]);
       const winnerPlayer = alivePlayers[0] as any;
       const fixedMapping: {
         [key: number]: "Blue" | "Red" | "Green" | "Yellow" | "Purple" | "Cyan" | "Orange" | "Winner";

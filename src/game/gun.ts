@@ -15,7 +15,7 @@ export class Gun {
   private baseCooldown: number = 500;
   private minCooldown: number = 500;
   private lastShotTime: number = 0;
-  private offset: number = 25; // spawn offset
+  private offset: number = 28; // spawn offset
 
   // For charge shot
   private isCharging: boolean = false;
