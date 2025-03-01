@@ -33,7 +33,7 @@ export class Player {
     gun_sprite.scale = this.sprite.scale;
     this.playerIndex = index;
 
-    this.gun = new Gun(gun_sprite, x, y, gun_color);
+    this.gun = new Gun(gun_sprite, x, y, gun_color, this);
   }
 
   public setBulletArray(bullets: Bullet[]) {
