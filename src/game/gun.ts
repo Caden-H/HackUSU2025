@@ -46,7 +46,7 @@ export class Gun {
 
   public setDirection(x: number, y: number): void {
     const magnitude = Math.sqrt(x * x + y * y);
-    if (magnitude > 0.15) {
+    if (magnitude !== 0) {
       this.direction.x = x / magnitude;
       this.direction.y = y / magnitude;
     }
@@ -56,12 +56,6 @@ export class Gun {
     }
   }
 
-  /**
-   * Fire a normal shot.
-   */
-    /**
-   * Fire a normal shot.
-   */
   /**
    * Fire a normal shot.
    */
