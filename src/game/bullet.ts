@@ -10,9 +10,15 @@ export class Bullet {
   public radius: number;
   public slowdown: number; // slowdown factor (per second)
 
+  // Explosion state (after pre-explosion)
   private explosionTriggered: boolean = false;
-  private explosionDuration: number = 0.5; // explosion lasts 0.5 seconds (adjust as needed)
-  private explosionElapsed: number = 0;   // timer for explosion
+  private explosionDuration: number = 1; // how long the explosion effect lasts
+  private explosionElapsed: number = 0;   // timer for explosion effect
+
+  // Pre-explosion (flashing) state:
+  private preExplosionActive: boolean = false;
+  private preExplosionDelay: number = 1;  // time to flash before explosion starts
+  private preExplosionElapsed: number = 0;  // timer for pre-explosion flashing
 
   // Accept speed as a parameter (default to 240 if not provided)
   constructor(
@@ -54,7 +60,19 @@ export class Bullet {
   public update(delta: number): void {
     if (this.isExpired) return;
 
-    // If the explosion has been triggered, update the explosion timer.
+    // If in pre-explosion (flashing) state, update that timer and flash.
+    if (this.preExplosionActive && !this.explosionTriggered) {
+      this.preExplosionElapsed += delta;
+      // Flashing effect: modulate alpha using a sine wave.
+      const flashFrequency = 5; // flashes per second (adjust as needed)
+      this.sprite.alpha = (Math.sin(2 * Math.PI * flashFrequency * this.preExplosionElapsed) + 1) / 2;
+      if (this.preExplosionElapsed >= this.preExplosionDelay) {
+        this.triggerExplosion();
+      }
+      return;
+    }
+
+    // If explosion has already been triggered, update explosion timer.
     if (this.explosionTriggered) {
       this.explosionElapsed += delta;
       if (this.explosionElapsed >= this.explosionDuration) {
@@ -63,7 +81,7 @@ export class Bullet {
       return;
     }
 
-    // Move the bullet.
+    // Normal movement.
     this.sprite.x += this.vx * delta;
     this.sprite.y += this.vy * delta;
 
@@ -90,24 +108,31 @@ export class Bullet {
 
     // Check current speed.
     const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-    if (currentSpeed < 60 && !this.explosionTriggered) {
-      this.triggerExplosion();
+    // When speed falls below threshold and not already in pre-explosion mode,
+    // start the pre-explosion (flashing) phase.
+    if (currentSpeed < 60 && !this.preExplosionActive) {
+      this.preExplosionActive = true;
+      this.preExplosionElapsed = 0;
+      // Optionally ensure full opacity at the start.
+      this.sprite.alpha = 1;
     }
   }
 
   private triggerExplosion(): void {
     // Clear the current graphics.
     this.sprite.clear();
-    // Draw an explosion effect (a larger, orange circle).
+    // Double the radius for explosion effect.
+    this.radius = this.radius * 2;
+    // Draw the explosion effect (a larger, orange circle).
     const explosionColor = 0xffa500; // orange
-    const explosionRadius = this.radius * 1.5;
     this.sprite.beginFill(explosionColor);
-    this.sprite.drawCircle(0, 0, explosionRadius);
+    this.sprite.drawCircle(0, 0, this.radius);
     this.sprite.endFill();
 
     // Begin explosion mode.
     this.explosionTriggered = true;
     this.explosionElapsed = 0;
-    // Do not mark as expired immediately; let the explosion remain visible.
+    // Reset alpha to 1.
+    this.sprite.alpha = 1;
   }
 }
