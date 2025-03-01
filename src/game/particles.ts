@@ -61,17 +61,11 @@ export class ParticleSystem {
     const size = 16;
     const graphics = new PIXI.Graphics();
 
-    // Create a soft smoke puff
-    graphics.beginFill(0xcccccc, 0.2); // Outer - light gray
+    // Create a flat smoke puff (simpler, vector-like design)
+    graphics.beginFill(0xeeeeee, 0.5); // Use a single flat color with moderate opacity
+    
+    // Simple circle for vector look
     graphics.drawCircle(size / 2, size / 2, size / 2);
-    graphics.endFill();
-
-    graphics.beginFill(0xeeeeee, 0.4); // Mid - lighter gray
-    graphics.drawCircle(size / 2, size / 2, (size / 2) * 0.6);
-    graphics.endFill();
-
-    graphics.beginFill(0xffffff, 0.5); // Core - white
-    graphics.drawCircle(size / 2, size / 2, (size / 2) * 0.3);
     graphics.endFill();
 
     return this.app.renderer.generateTexture(graphics);
@@ -107,14 +101,27 @@ export class ParticleSystem {
   }
 
   // Create gun smoke at specific coordinates with direction
-  createGunSmoke(x: number, y: number, dirX: number, dirY: number): void {
-    const particleCount = 5;
+  createGunSmoke(x: number, y: number, dirX: number, dirY: number, isCharged: boolean = false): void {
+    // More particles for charged shots
+    const particleCount = isCharged ? 12 : 5;
+    
+    // Larger spread for charged shots
+    const spread = isCharged ? 0.6 : 0.3;
+    
+    // Longer life for charged shot smoke
+    const baseLife = isCharged ? 1.5 : 0.8;
 
     for (let i = 0; i < particleCount; i++) {
       // Randomize direction slightly
-      const spread = 0.3;
       const angle = Math.atan2(dirY, dirX) + (Math.random() - 0.5) * spread;
-      const speed = 0.5 + Math.random() * 1;
+      
+      // Faster speed for charged shots
+      const speed = 0.5 + Math.random() * (isCharged ? 1.5 : 1);
+      
+      // Larger scale for charged shots
+      const scale = isCharged 
+        ? 0.5 + Math.random() * 0.4 
+        : 0.3 + Math.random() * 0.2;
 
       this.createParticle({
         x,
@@ -124,9 +131,9 @@ export class ParticleSystem {
         rotation: Math.random() * Math.PI * 2,
         rotationSpeed: (Math.random() - 0.5) * 0.1,
         alpha: 0.4,
-        scale: 0.3 + Math.random() * 0.2,
-        life: 1,
-        maxLife: 0.5 + Math.random() * 0.5,
+        scale: scale,
+        life: baseLife,
+        maxLife: baseLife + Math.random() * 0.5,
         type: "gunSmoke",
       });
     }

@@ -127,7 +127,8 @@ export class Gun {
       smokePosX,
       smokePosY,
       this.direction.x,
-      this.direction.y
+      this.direction.y,
+      false // not charged
     );
 
     // Vibrate after successfully firing the bullet
@@ -278,14 +279,17 @@ export class Gun {
     const smokePosX = originX + this.direction.x * this.offset;
     const smokePosY = originY + this.direction.y * this.offset;
 
-    // Create multiple smoke particles for charged shots
-    const particleCount = chargeDuration >= this.maxCharge ? 10 : 5;
+    // Create smoke for charged shots
+    const isFullyCharged = chargeDuration >= this.maxCharge;
+    // Create multiple smoke particles in a burst pattern
+    const particleCount = isFullyCharged ? 3 : 2;
     for (let i = 0; i < particleCount; i++) {
       this.particleSystem.createGunSmoke(
         smokePosX,
         smokePosY,
         this.direction.x,
-        this.direction.y
+        this.direction.y,
+        true // mark as charged
       );
     }
   }
