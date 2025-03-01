@@ -60,10 +60,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   p2_gun_sprite.anchor.set(0.5);
   app.stage.addChild(p2_gun_sprite);
 
-  const centerY = window.innerHeight / 2 
-  const centerX = window.innerWidth / 2
   const center = app.canvas.width / 2;
-  console.log(centerX, centerY, center)
   // Create two players
   const player1 = new Player(p1_body_sprite, p1_gun_sprite, center - 100, center - 100, 0xff0000, 0x0000ff);  // Red
   const player2 = new Player(p2_body_sprite, p2_gun_sprite, center + 100, center + 100, 0x0000ff, 0xff0000);  // Blue
@@ -75,18 +72,18 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       bullets.splice(i, 1);
     }
 
-    player1.sprite.x = centerX - 100;
-    player1.sprite.y = centerX - 100;
-    player1.gun.sprite.x = centerX - 100;
-    player1.gun.sprite.y = centerX - 100;
+    player1.sprite.x = center - 100;
+    player1.sprite.y = center - 100;
+    player1.gun.sprite.x = center - 100;
+    player1.gun.sprite.y = center - 100;
     player1.isDead = false;
     player1.sprite.visible = true;
     player1.gun.sprite.visible = true;
     
-    player2.sprite.x = centerX + 100;
-    player2.sprite.y = centerX + 100;
-    player2.gun.sprite.x = centerX + 100;
-    player2.gun.sprite.y = centerX + 100;
+    player2.sprite.x = center + 100;
+    player2.sprite.y = center + 100;
+    player2.gun.sprite.x = center + 100;
+    player2.gun.sprite.y = center + 100;
     player2.isDead = false;
     player2.sprite.visible = true;
     player2.gun.sprite.visible = true;
