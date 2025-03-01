@@ -22,8 +22,8 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
     width: getSquareSize(),
     height: getSquareSize(),
     backgroundColor: 0x333333,
-    resolution: window.devicePixelRatio || 1,
   });
+
   document.body.appendChild(app.canvas);
 
   // Position the canvas absolutely at the top and center it horizontally
@@ -46,8 +46,8 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
 
   // We'll create a rounded rectangle as a backdrop
   const startBg = new PIXI.Graphics();
-  const bgWidth = app.screen.width * 0.7;
-  const bgHeight = app.screen.height * 0.3;
+  const bgWidth = app.screen.width * 0.95;
+  const bgHeight = app.screen.height * 0.4;
   startBg.beginFill(0x000000, 0.75);
   startBg.drawRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
   startBg.endFill();
@@ -65,7 +65,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   });
   titleText.anchor.set(0.5);
   titleText.x = app.screen.width / 2;
-  titleText.y = app.screen.height / 2 - bgHeight / 6;
+  titleText.y = app.screen.height / 2 - 80;
   startScreen.addChild(titleText);
 
   // "Press B to Start" Text (smaller)
@@ -77,8 +77,27 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   });
   startButtonText.anchor.set(0.5);
   startButtonText.x = app.screen.width / 2;
-  startButtonText.y = app.screen.height / 2 + bgHeight / 6;
+  startButtonText.y = app.screen.height / 2;
   startScreen.addChild(startButtonText);
+
+  // Instructions Text (below "Press B to Start")
+  const instructionsText = new PIXI.Text(
+    "Use the left stick to move YOUR tank.\n" +
+    "Use the right stick to move and fire your OPPONENT's gun.\n" +
+    "Hold R/ZR to fire continuously or L/ZL to charge a powerful shot.\n" +
+    "If YOUR tank is destroyed, you lose.",
+    {
+      fontFamily: "Arial",
+      fontSize: 24,
+      fill: 0xffffff,
+      align: "center",
+    }
+  );
+  instructionsText.anchor.set(0.5);
+  // Position it slightly below the startButtonText
+  instructionsText.x = startButtonText.x;
+  instructionsText.y = startButtonText.y + 80; // adjust as needed
+  startScreen.addChild(instructionsText);
 
   // When the game starts, we will create new players, bullets, wall, etc.
   let players: Player[] = [];
