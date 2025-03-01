@@ -1,15 +1,10 @@
-- Scale number of players based on connected controller count
 - Clean up visuals- maybe have black background come to wall edges somehow?
 - Add music/SFX
 - Caden will add Particles in various places- look into pixi's ParticleContainer for this, for performance reasons.
 - Better bullet images could be nice
-- Come up with name- SaboTanks
 - More maps would be cool
 
 tutorial? gotta get players to look at their tank, easy to get distracted by gun lol
-
-Bugs:
-- If you bump a player in the direction that they shoot a bullet, the bullet spawns and immedietelly kills them (maybe bullets have a moment where they can't kill the player that shot them?)
 
 Future gamemode ideas:
 - Soccer
@@ -27,3 +22,5 @@ speedup bullet/firerate
 bulletsize charge thing
 projectile slowdown, then die?
 walls
+- Scale number of players based on connected controller count
+- Come up with name- SaboTanks
