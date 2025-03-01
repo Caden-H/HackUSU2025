@@ -49,7 +49,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
 
   const players: Player[] = [];
   const initialPositions: { x: number; y: number }[] = [];
-//#ffa63f
+
   const fixedColors = [0x1180ff, 0xff4827, 0x2aff23, 0xfff23b, 0xe523ff, 0x23ffa3, 0xffa63f];
   const center = app.canvas.width / 2;
   const radius = 100 * Math.max(1,(2 * numPlayers/10));
@@ -250,14 +250,18 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
     // Win condition: if only one player is still alive, declare them the winner
     const alivePlayers = players.filter((player) => !player.isDead);
     if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
+      console.log("Winner:", alivePlayers[0]);
       const winnerPlayer = alivePlayers[0] as any;
       const fixedMapping: {
-        [key: number]: "Blue" | "Red" | "Green" | "Yellow" | "Winner";
+        [key: number]: "Blue" | "Red" | "Green" | "Yellow" | "Purple" | "Cyan" | "Orange" | "Winner";
       } = {
-        [0x0000ff]: "Blue",
-        [0xff0000]: "Red",
-        [0x00ff00]: "Green",
-        [0xffff00]: "Yellow",
+        [0x1180ff]: "Blue",
+        [0xff4827]: "Red",
+        [0x2aff23]: "Green",
+        [0xfff23b]: "Yellow",
+        [0xe523ff]: "Purple",
+        [0x23ffa3]: "Cyan",
+        [0xffa63f]: "Orange",
         [0x000000]: "Winner",
       };
 

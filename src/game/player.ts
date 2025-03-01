@@ -29,7 +29,7 @@ export class Player {
     this.sprite.x = x;
     this.sprite.y = y;
     this.sprite.tint = body_color;
-    this.sprite.scale = 0.2;
+    this.sprite.scale = 0.15;
     gun_sprite.scale = this.sprite.scale;
     this.playerIndex = index;
 
@@ -95,7 +95,7 @@ export class Player {
     const gamepads = navigator.getGamepads();
     const gamepad = gamepads[this.playerIndex];
     if (gamepad) vibrateGamepad(gamepad, 200, 1.0, 1.0);
-    
+
   }
 
   public move(xAxis: number, yAxis: number) {
