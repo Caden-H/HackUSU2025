@@ -17,15 +17,17 @@
      transform="translate(-28.884051,-99.819887)">
     <g
        id="g45"
-       transform="translate(-19.723256,-9.9412994)">
+       transform="translate(-19.723256,-9.9412994)"
+       style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1">
       <use
          x="0"
          y="0"
          xlink:href="#rect25"
          id="use27"
-         transform="translate(-55.809879)" />
+         transform="translate(-55.809879)"
+         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1" />
       <rect
-         style="fill:#424242;fill-opacity:1;stroke:#2e2e2e;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
          id="rect25"
          width="19.958551"
          height="62.712196"
@@ -36,20 +38,21 @@
     </g>
     <g
        id="g48"
-       transform="translate(-1.5424743,-5.4123497)">
+       transform="translate(-1.5424743,-5.4123497)"
+       style="fill:#0fb6ff;fill-opacity:1">
       <ellipse
-         style="font-variation-settings:normal;opacity:1;fill:#808080;fill-opacity:1;stroke:#555555;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         style="font-variation-settings:normal;opacity:1;fill:#0070a5;fill-opacity:1;stroke:#008ac7;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
          id="path27"
          cx="86.578522"
          cy="161.98289"
          rx="30.62842"
          ry="36.813007" />
       <circle
-         style="fill:#555555;fill-opacity:1;stroke:none;stroke-width:5.52566;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#008ac7;fill-opacity:1;stroke:none;stroke-width:6.85781;stroke-dasharray:none;stroke-opacity:1"
          id="circle46"
          cx="86.735092"
-         cy="161.98289"
-         r="22.838345" />
+         cy="172.07108"
+         r="28.34432" />
     </g>
     <ellipse
        style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:0;stroke:none;stroke-width:6.02001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0, 12.04;stroke-dashoffset:13.244;stroke-opacity:1;paint-order:stroke fill markers"

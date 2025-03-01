@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.62289277"
-     inkscape:cx="455.93723"
-     inkscape:cy="223.15237"
+     inkscape:zoom="0.4404517"
+     inkscape:cx="177.09093"
+     inkscape:cy="156.65736"
      inkscape:window-width="1920"
      inkscape:window-height="1043"
      inkscape:window-x="0"
@@ -43,23 +43,84 @@
        bleed="0" />
   </sodipodi:namedview>
   <defs
-     id="defs1" />
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath24">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.999999;stroke-linecap:butt;stroke-linejoin:bevel;paint-order:stroke markers fill;stop-color:#000000"
+         id="rect24"
+         width="44.999748"
+         height="77.937294"
+         x="251.53429"
+         y="222.73541" />
+    </clipPath>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       inkscape:label="Drop Shadow"
+       id="filter198"
+       x="-0.87807168"
+       y="-0.40524277"
+       width="2.7561434"
+       height="1.8104855">
+      <feFlood
+         result="flood"
+         in="SourceGraphic"
+         flood-opacity="0.996078"
+         flood-color="rgb(255,255,255)"
+         id="feFlood197" />
+      <feGaussianBlur
+         result="blur"
+         in="SourceGraphic"
+         stdDeviation="2.000000"
+         id="feGaussianBlur197" />
+      <feOffset
+         result="offset"
+         in="blur"
+         dx="0.000000"
+         dy="0.000000"
+         id="feOffset197" />
+      <feComposite
+         result="comp1"
+         operator="in"
+         in="flood"
+         in2="offset"
+         id="feComposite197" />
+      <feComposite
+         result="comp2"
+         operator="over"
+         in="SourceGraphic"
+         in2="comp1"
+         id="feComposite198" />
+    </filter>
+  </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-28.884051,-99.819887)">
+    <rect
+       style="font-variation-settings:normal;opacity:1;fill:#97cdbe;fill-opacity:1;stroke:none;stroke-width:4.87329;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:50.056;stroke-opacity:1;paint-order:stroke fill markers"
+       id="rect54"
+       width="382.29965"
+       height="367.7597"
+       x="-110.85878"
+       y="-34.67268"
+       rx="5.6575665"
+       ry="5.9851046" />
     <g
        id="g45"
-       transform="translate(-19.723256,-9.9412994)">
+       transform="translate(-19.723256,-9.9412994)"
+       style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1">
       <use
          x="0"
          y="0"
          xlink:href="#rect25"
          id="use27"
-         transform="translate(-55.809879)" />
+         transform="translate(-55.809879)"
+         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-opacity:1" />
       <rect
-         style="fill:#6f1414;fill-opacity:1;stroke:#5c0000;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#00608b;fill-opacity:1;stroke:#005373;stroke-width:2.887;stroke-dasharray:none;stroke-opacity:1"
          id="rect25"
          width="19.958551"
          height="62.712196"
@@ -70,20 +131,21 @@
     </g>
     <g
        id="g48"
-       transform="translate(-1.5424743,-5.4123497)">
+       transform="translate(-1.5424743,-5.4123497)"
+       style="fill:#0fb6ff;fill-opacity:1">
       <ellipse
-         style="font-variation-settings:normal;opacity:1;fill:#ff0000;fill-opacity:1;stroke:#a80101;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         style="font-variation-settings:normal;opacity:1;fill:#0070a5;fill-opacity:1;stroke:#008ac7;stroke-width:3.239;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
          id="path27"
          cx="86.578522"
          cy="161.98289"
          rx="30.62842"
          ry="36.813007" />
       <circle
-         style="fill:#a80101;fill-opacity:1;stroke:none;stroke-width:5.52566;stroke-dasharray:none;stroke-opacity:1"
+         style="fill:#008ac7;fill-opacity:1;stroke:none;stroke-width:6.85781;stroke-dasharray:none;stroke-opacity:1"
          id="circle46"
          cx="86.735092"
-         cy="161.98289"
-         r="22.838345" />
+         cy="172.07108"
+         r="28.34432" />
     </g>
     <g
        id="g47"
@@ -97,20 +159,21 @@
          r="14.416405" />
       <path
          id="path26"
-         style="font-variation-settings:normal;fill:#3c2cd9;fill-opacity:1;stroke:#0f0183;stroke-width:2.139;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
+         style="font-variation-settings:normal;fill:#ff6d2b;fill-opacity:1;stroke:#9a3000;stroke-width:2.139;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000"
          d="m 104.99979,114.03012 c -5.24925,0 -9.474871,2.63822 -9.474871,5.91488 v 36.17764 a 12.280023,12.280023 0 0 0 -2.804997,7.78247 12.280023,12.280023 0 0 0 12.279868,12.27987 12.280023,12.280023 0 0 0 12.28039,-12.27987 12.280023,12.280023 0 0 0 -2.805,-7.81038 V 119.945 c 0,-3.27666 -4.22614,-5.91488 -9.47539,-5.91488 z"
          inkscape:transform-center-y="-18.848259" />
       <ellipse
-         style="font-variation-settings:normal;fill:#000000;fill-opacity:1;stroke:#0f0183;stroke-width:0.657492;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
+         style="font-variation-settings:normal;fill:#2a0c00;fill-opacity:1;stroke:#6c2200;stroke-width:0.992833;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:fill markers stroke"
          id="ellipse26"
          cx="105"
          cy="120.33091"
-         rx="6.6812296"
-         ry="3.8054883" />
+         rx="6.4533238"
+         ry="3.4760439" />
     </g>
     <g
        id="g40"
-       style="fill:#ff0099;fill-opacity:1">
+       style="fill:#ff0099;fill-opacity:1"
+       transform="translate(63.675162,2.4028363)">
       <rect
          style="font-variation-settings:normal;opacity:1;fill:#ff0099;fill-opacity:1;stroke:none;stroke-width:6.02001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0, 12.04;stroke-dashoffset:13.244;stroke-opacity:1;paint-order:stroke fill markers"
          id="rect39"
@@ -130,7 +193,7 @@
     </g>
     <g
        id="g39"
-       transform="translate(0,1.4725203)"
+       transform="translate(63.675162,3.8753566)"
        style="fill:#efff0f;fill-opacity:1">
       <g
          id="g41"
@@ -156,7 +219,7 @@
     <g
        id="g42"
        style="fill:#ff4f00;fill-opacity:1"
-       transform="translate(0,132.86083)">
+       transform="translate(63.675162,135.26367)">
       <rect
          style="font-variation-settings:normal;opacity:1;fill:#ff4f00;fill-opacity:1;stroke:none;stroke-width:6.02001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:0, 12.04;stroke-dashoffset:13.244;stroke-opacity:1;paint-order:stroke fill markers"
          id="rect41"
@@ -176,7 +239,7 @@
     </g>
     <g
        id="g44"
-       transform="translate(0,134.33335)"
+       transform="translate(63.675162,136.73619)"
        style="fill:#0fb6ff;fill-opacity:1">
       <g
          id="g43"
@@ -206,5 +269,17 @@
        cy="141.74092"
        rx="29.988443"
        ry="18.533876" />
+    <circle
+       style="font-variation-settings:normal;opacity:1;fill:#425c38;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.49787;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:50.056;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path204"
+       cx="85.036049"
+       cy="55.325706"
+       r="3.9960682" />
+    <circle
+       style="font-variation-settings:normal;fill:#425c38;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:5.554;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:50.056;stroke-opacity:1;paint-order:stroke fill markers"
+       id="path204-2"
+       cx="117.28397"
+       cy="54.627518"
+       r="14.817157" />
   </g>
 </svg>
