@@ -168,6 +168,48 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       player.update(delta.elapsedMS / 1000);
     }
 
+    // Loop over every unique pair of players.
+    for (let i = 0; i < players.length; i++) {
+      for (let j = i + 1; j < players.length; j++) {
+        const p1 = players[i];
+        const p2 = players[j];
+  
+        // Only process collisions for players that are alive.
+        if (p1.isDead || p2.isDead) continue;
+  
+        // Compute the vector between the two players.
+        const dx = p2.sprite.x - p1.sprite.x;
+        const dy = p2.sprite.y - p1.sprite.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+  
+        // Calculate the minimum distance they should be apart (sum of radii).
+        const minDist = p1.radius + p2.radius;
+        if (distance < minDist && distance > 0) {
+          // Collision detected: calculate how much they overlap.
+          const overlap = minDist - distance;
+  
+          // Normalize the collision vector.
+          const nx = dx / distance;
+          const ny = dy / distance;
+  
+          // Determine a bounce factor; you can tweak this constant for more or less "bounce power".
+          const bounceFactor = 0.5; // Each player will be pushed back by half the overlap distance.
+  
+          // Displace each player in opposite directions.
+          p1.sprite.x -= nx * overlap * bounceFactor;
+          p1.sprite.y -= ny * overlap * bounceFactor;
+          p2.sprite.x += nx * overlap * bounceFactor;
+          p2.sprite.y += ny * overlap * bounceFactor;
+  
+          // Update the gun positions to match their players.
+          p1.gun.sprite.x = p1.sprite.x;
+          p1.gun.sprite.y = p1.sprite.y;
+          p2.gun.sprite.x = p2.sprite.x;
+          p2.gun.sprite.y = p2.sprite.y;
+        }
+      }
+    }
+
     // Update bullets & remove expired ones
     for (let i = bullets.length - 1; i >= 0; i--) {
       const bullet = bullets[i];

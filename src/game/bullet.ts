@@ -4,9 +4,9 @@ export class Bullet {
   public sprite: PIXI.Graphics;
   public isExpired: boolean = false;
 
-  private vx: number;
-  private vy: number;
-  private speed: number = 5;
+  public vx: number;
+  public vy: number;
+  public speed: number = 5;
 
   private bounces: number = 0;
   private maxBounces: number = 2;

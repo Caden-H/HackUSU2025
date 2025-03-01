@@ -5,9 +5,10 @@ import { Bullet } from './bullet';
 export class Player {
   public sprite: PIXI.Sprite;
   public gun: Gun;
-
-  private speed: number = 3;
-  private radius: number = 20;
+  public radius: number = 20;
+  public vx: number = 0;
+  public vy: number = 0;
+  public speed: number = 3;
   public isDead: boolean = false;
 
   private bulletArray: Bullet[] = [];
@@ -61,5 +62,8 @@ export class Player {
 
     this.gun.sprite.x = this.sprite.x;
     this.gun.sprite.y = this.sprite.y;
+
+    this.vx = xAxis;
+    this.vy = yAxis;
   }
 }
