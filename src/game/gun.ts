@@ -58,7 +58,7 @@ export class Gun {
    * Fire a normal shot.
    */
   public shootNormal(originX: number, originY: number): void {
-    if (!this.stageRef || !this.sprite.visible) return;
+    if (!this.stageRef || !this.sprite.visible || this.isCharging) return;
 
     const now = performance.now();
     const elapsedTime = now - this.gameStartTime;

@@ -1,5 +1,4 @@
 walls
-bulletsize charge thing
 
 tutorial?
 
@@ -12,3 +11,4 @@ players bounce
 score/winscreen
 fix spawn
 speedup bullet/firerate
+bulletsize charge thing
