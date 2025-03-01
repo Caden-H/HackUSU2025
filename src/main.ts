@@ -93,7 +93,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   app.stage.addChild(boundaryGraphics);
 
   // Shared bullet array
-  let bullets: Bullet[] = [];
+  const bullets: Bullet[] = [];
   // Provide references to the bullet array for each player's gun
   for (const player of players) {
     player.gun.setBulletArray(bullets, app.stage);
@@ -127,21 +127,38 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     return mag > deadZone ? [ax, ay] : [0, 0];
   }
 
+  const lineHighlight = new PIXI.Graphics();
+  app.stage.addChild(lineHighlight);
+
   // Handle gamepad input: assign gamepad i to player i
   function readGamepads(): void {
     const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
     for (let i = 0; i < players.length; i++) {
       const gp = gamepads[i];
       if (gp) {
-        // Movement: player i uses left stick.
-        const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
-        players[i].move(moveX, moveY);
-  
+        // Movement: player i uses left stick for their own movement.
+        let [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
+        const targetPoint = new PIXI.Point(players[i].sprite.x + moveX, players[i].sprite.y + moveY);
+        const { inside } = boundary.contains(targetPoint.x, targetPoint.y);
+        const nearestPoint = boundary.nearestPoint(
+          targetPoint.x,
+          targetPoint.y
+        );
+
+        let shouldRotate = true;
+        if(!inside) {
+          moveX = nearestPoint.x - players[i].sprite.x;
+          moveY = nearestPoint.y - players[i].sprite.y;
+          shouldRotate = false;
+        }
+
+        players[i].move(moveX, moveY, shouldRotate);
+
         // Gun control: player i uses right stick to control next player's gun.
         const nextIndex = (i + 1) % players.length;
         const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
         players[nextIndex].gun.setDirection(gunX, gunY);
-  
+
         // Normal shot via left triggers.
         if (gp.buttons[5]?.pressed || gp.buttons[7]?.pressed) {
           players[nextIndex].gun.shootNormal(
@@ -149,7 +166,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
             players[nextIndex].sprite.y
           );
         }
-  
+
         // Charge shot via right triggers.
         // We call updateCharge each frame, passing true if the button is pressed.
         const chargePressed = gp.buttons[4]?.pressed || gp.buttons[6]?.pressed;
@@ -158,7 +175,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
           players[nextIndex].sprite.y,
           chargePressed
         );
-  
+
         // Reset game if button 0 is pressed and at least one player is dead.
         if (gp.buttons[0]?.pressed && players.some(p => p.isDead)) {
           reset();
@@ -181,10 +198,10 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       for (let j = i + 1; j < players.length; j++) {
         const p1 = players[i];
         const p2 = players[j];
-  
+
         // Only process collisions if both players are alive.
         if (p1.isDead || p2.isDead) continue;
-  
+
         const dx = p2.sprite.x - p1.sprite.x;
         const dy = p2.sprite.y - p1.sprite.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -193,12 +210,12 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
           // Get normalized direction vector.
           const nx = dx / distance;
           const ny = dy / distance;
-  
+
           // Calculate an impulse based on the overlap.
           // Adjust the impulseMultiplier to control "bounce power".
           const impulseMultiplier = 600;
           const impulse = impulseMultiplier;
-  
+
           // Add impulse to each player's velocity in opposite directions.
           p1.vx -= nx * impulse;
           p1.vy -= ny * impulse;
@@ -220,28 +237,28 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
 
     // Win condition: if only one player is still alive, declare them the winner
     const alivePlayers = players.filter((player) => !player.isDead);
-if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
-  const winnerPlayer = alivePlayers[0] as any;
-  // Map fixed colors to names. For any additional players, you might handle them differently.
-  const fixedMapping: { [key: number]: 'Blue' | 'Red' | 'Green' | 'Yellow' | 'Winner' } = {
-    [0x0000ff]: 'Blue',
-    [0xff0000]: 'Red',
-    [0x00ff00]: 'Green',
-    [0xffff00]: 'Yellow',
-    [0x000000]: 'Winner',
-  };
+    if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
+      const winnerPlayer = alivePlayers[0] as any;
+      // Map fixed colors to names. For any additional players, you might handle them differently.
+      const fixedMapping: { [key: number]: 'Blue' | 'Red' | 'Green' | 'Yellow' | 'Winner' } = {
+        [0x0000ff]: 'Blue',
+        [0xff0000]: 'Red',
+        [0x00ff00]: 'Green',
+        [0xffff00]: 'Yellow',
+        [0x000000]: 'Winner',
+      };
 
-  // Use the mapping if available; otherwise, default to a generic label.
-  const winnerName = fixedMapping[winnerPlayer.color] || 'Winner';
-  if (winnerName !== 'Winner') {
-    winScreen.declareWinner(winnerName);
-  }
-} else if (
-  alivePlayers.length === 0 &&
-  players.some((player) => player.isDead) &&
-  !winScreen.isGameOver()
-) {
-  winScreen.declareWinner('Draw');
-}
+      // Use the mapping if available; otherwise, default to a generic label.
+      const winnerName = fixedMapping[winnerPlayer.color] || 'Winner';
+      if (winnerName !== 'Winner') {
+        winScreen.declareWinner(winnerName);
+      }
+    } else if (
+      alivePlayers.length === 0 &&
+      players.some((player) => player.isDead) &&
+      !winScreen.isGameOver()
+    ) {
+      winScreen.declareWinner('Draw');
+    }
   });
 })();

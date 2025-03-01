@@ -68,16 +68,17 @@ export class Player {
     }
   }
 
-  public move(xAxis: number, yAxis: number) {
+
+  public move(xAxis: number, yAxis: number, shouldRotate: boolean = true) {
     if (this.isDead) return;
-    
+
     if (xAxis !== 0 || yAxis !== 0) {
       const desiredVX = xAxis * this.speed;
       const desiredVY = yAxis * this.speed;
-      
+
       // Calculate current velocity magnitude.
       const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-      
+
       // If the current velocity is low (or at most equal to speed), snap to the desired velocity.
       if (currentVelMag <= this.speed) {
         this.vx = desiredVX;
@@ -87,9 +88,11 @@ export class Player {
         this.vx = this.vx + (desiredVX - this.vx) * lerpFactor;
         this.vy = this.vy + (desiredVY - this.vy) * lerpFactor;
       }
-      
+
       // Update rotation to face the input direction.
-      this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
+      if (shouldRotate) {
+        this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
+      }
     } else {
         const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
         if (currentVelMag <= this.speed) {
@@ -97,5 +100,5 @@ export class Player {
             this.vy = 0;
         }
     }
-  } 
+  }
 }
