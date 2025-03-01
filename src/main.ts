@@ -91,7 +91,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   const boundary = new Wall(wallPoints);
   const boundaryGraphics = boundary.draw();
   app.stage.addChild(boundaryGraphics);
-  
+
   // Shared bullet array
   let bullets: Bullet[] = [];
   // Provide references to the bullet array for each player's gun
@@ -129,12 +129,12 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
         // Movement: player i uses left stick for their own movement.
         const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
         players[i].move(moveX, moveY);
-  
+
         // Gun control: player i uses right stick to control next player's gun.
         const nextIndex = (i + 1) % players.length;
         const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
         players[nextIndex].gun.setDirection(gunX, gunY);
-  
+
         // Shoot if any trigger is pressed, controlling the next player's gun.
         if (
           gp.buttons[4]?.pressed || gp.buttons[5]?.pressed ||
@@ -145,7 +145,7 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
             players[nextIndex].sprite.y
           );
         }
-  
+
         // Reset game if button 0 (e.g. "A") is pressed and at least one player is dead.
         if (gp.buttons[0]?.pressed && players.some(p => p.isDead)) {
           reset();
