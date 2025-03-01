@@ -61,35 +61,92 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   startScreen.addChild(startBg);
 
   // Load the logo texture
-  const logoTexture = await PIXI.Assets.load({src: logoSrc, data: { resolution: 10 }});
+  const logoTexture = await PIXI.Assets.load({
+    src: logoSrc,
+    data: { resolution: 10 },
+  });
   // Create a sprite for the logo
   const logoSprite = new PIXI.Sprite(logoTexture);
   logoSprite.anchor.set(0.5);
-  logoSprite.scale = 2
+  logoSprite.scale = 2;
   logoSprite.x = app.screen.width / 2;
   // We'll position it a bit above the center of the start screen rectangle
   logoSprite.y = app.screen.height / 2 - 100;
   startScreen.addChild(logoSprite);
 
+  // Replace the simple "Press 'B' to Start" Text with a container that includes button graphics
+  const startButtonContainer = new PIXI.Container();
 
-  // "Press B to Start" Text (smaller)
-  const startButtonText = new PIXI.Text("Press 'B' to Start", {
+  // "Press" text
+  const pressStartText = new PIXI.Text("Press ", {
     fontFamily: "Arial",
     fontSize: 36,
     fill: 0xffffff,
     align: "center",
   });
-  startButtonText.anchor.set(0.5);
-  startButtonText.x = app.screen.width / 2;
-  startButtonText.y = app.screen.height / 2 + 20;
-  startScreen.addChild(startButtonText);
+  pressStartText.anchor.set(1, 0.5); // Right align
+  startButtonContainer.addChild(pressStartText);
+
+  // Create button indicator graphic - same as in WinScreen
+  const startButtonGraphic = new PIXI.Graphics();
+  const buttonSize = 8; // Circle diameter
+  const buttonSpacing = 8; // Spacing between circles
+
+  startButtonGraphic.clear();
+
+  // Top button (hollow)
+  startButtonGraphic.lineStyle(2, 0xffffff);
+  startButtonGraphic.beginFill(0, 0);
+  startButtonGraphic.drawCircle(0, -buttonSpacing, buttonSize / 2);
+  startButtonGraphic.endFill();
+
+  // Right button (hollow)
+  startButtonGraphic.lineStyle(2, 0xffffff);
+  startButtonGraphic.beginFill(0, 0);
+  startButtonGraphic.drawCircle(buttonSpacing, 0, buttonSize / 2);
+  startButtonGraphic.endFill();
+
+  // Left button (hollow)
+  startButtonGraphic.lineStyle(2, 0xffffff);
+  startButtonGraphic.beginFill(0, 0);
+  startButtonGraphic.drawCircle(-buttonSpacing, 0, buttonSize / 2);
+  startButtonGraphic.endFill();
+
+  // Bottom button (filled in white)
+  startButtonGraphic.lineStyle(2, 0xffffff);
+  startButtonGraphic.beginFill(0xffffff); // Yellow fill color
+  startButtonGraphic.drawCircle(0, buttonSpacing, buttonSize / 2);
+  startButtonGraphic.endFill();
+
+  startButtonContainer.addChild(startButtonGraphic);
+
+  // "to Start" text
+  const toStartText = new PIXI.Text(" to Start", {
+    fontFamily: "Arial",
+    fontSize: 36,
+    fill: 0xffffff,
+    align: "center",
+  });
+  toStartText.anchor.set(0, 0.5); // Left align
+  startButtonContainer.addChild(toStartText);
+
+  // Position elements horizontally
+  pressStartText.x = -10;
+  pressStartText.y = 0;
+  toStartText.x = 10;
+  toStartText.y = 0;
+
+  // Center the whole container where the original text was
+  startButtonContainer.x = app.screen.width / 2;
+  startButtonContainer.y = app.screen.height / 2 + 20;
+  startScreen.addChild(startButtonContainer);
 
   // Instructions Text (below "Press B to Start")
   const instructionsText = new PIXI.Text(
     "Use the left stick to move YOUR tank.\n" +
-    "Use the right stick to move and fire your OPPONENT's gun.\n" +
-    "Hold R/ZR to fire continuously or L/ZL to charge a powerful shot.\n" +
-    "If YOUR tank is destroyed, you lose.",
+      "Use the right stick to move and fire your OPPONENT's gun.\n" +
+      "Hold R/ZR to fire continuously or L/ZL to charge a powerful shot.\n" +
+      "If YOUR tank is destroyed, you lose.",
     {
       fontFamily: "Arial",
       fontSize: 24,
@@ -99,8 +156,8 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   );
   instructionsText.anchor.set(0.5);
   // Position it slightly below the startButtonText
-  instructionsText.x = startButtonText.x;
-  instructionsText.y = startButtonText.y + 80; // adjust as needed
+  instructionsText.x = startButtonContainer.x;
+  instructionsText.y = startButtonContainer.y + 80; // adjust as needed
   startScreen.addChild(instructionsText);
 
   // When the game starts, we will create new players, bullets, wall, etc.

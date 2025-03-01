@@ -1,6 +1,13 @@
-import * as PIXI from 'pixi.js';
+import * as PIXI from "pixi.js";
 
-type ScoreColor = 'Red' | 'Blue' | 'Green' | 'Yellow' | 'Purple' | 'Cyan' | 'Orange';
+type ScoreColor =
+  | "Red"
+  | "Blue"
+  | "Green"
+  | "Yellow"
+  | "Purple"
+  | "Cyan"
+  | "Orange";
 
 export class WinScreen {
   private victoryText: PIXI.Text;
@@ -14,8 +21,11 @@ export class WinScreen {
   private scoreOrder: ScoreColor[];
 
   constructor(app: PIXI.Application, numPlayers: number = 2) {
-    const fullScoreOrder: ScoreColor[] = ['Blue', 'Red', 'Green', 'Yellow'];
-    const desiredCount = Math.max(2, Math.min(numPlayers, fullScoreOrder.length));
+    const fullScoreOrder: ScoreColor[] = ["Blue", "Red", "Green", "Yellow"];
+    const desiredCount = Math.max(
+      2,
+      Math.min(numPlayers, fullScoreOrder.length)
+    );
     this.scoreOrder = fullScoreOrder.slice(0, desiredCount);
 
     this.scoreOrder.forEach((color) => {
@@ -23,11 +33,11 @@ export class WinScreen {
     });
 
     // Victory Text
-    this.victoryText = new PIXI.Text('', {
+    this.victoryText = new PIXI.Text("", {
       fontSize: 64,
       fill: 0xffffff,
-      align: 'center',
-      fontWeight: 'bold',
+      align: "center",
+      fontWeight: "bold",
       fontFamily: '"Oswald", "Arial Black", "Helvetica Neue", sans-serif',
       // letterSpacing: 3, // Add spacing between letters (value in pixels)
     });
@@ -66,27 +76,59 @@ export class WinScreen {
 
     // Define style mappings
     const scoreStyleMapping: Record<ScoreColor, PIXI.TextStyle> = {
-      Blue: new PIXI.TextStyle({ fontSize: 48, fill: 0x0000ff, align: 'center' }),
-      Red: new PIXI.TextStyle({ fontSize: 48, fill: 0xff0000, align: 'center' }),
-      Green: new PIXI.TextStyle({ fontSize: 48, fill: 0x00ff00, align: 'center' }),
-      Yellow: new PIXI.TextStyle({ fontSize: 48, fill: 0xffff00, align: 'center' }),
-      Purple: new PIXI.TextStyle({ fontSize: 48, fill: 0xe523ff, align: 'center' }),
-      Cyan: new PIXI.TextStyle({ fontSize: 48, fill: 0x23ffa3, align: 'center' }),
-      Orange: new PIXI.TextStyle({ fontSize: 48, fill: 0xffa63f, align: 'center' }),
+      Blue: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0x0000ff,
+        align: "center",
+      }),
+      Red: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0xff0000,
+        align: "center",
+      }),
+      Green: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0x00ff00,
+        align: "center",
+      }),
+      Yellow: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0xffff00,
+        align: "center",
+      }),
+      Purple: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0xe523ff,
+        align: "center",
+      }),
+      Cyan: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0x23ffa3,
+        align: "center",
+      }),
+      Orange: new PIXI.TextStyle({
+        fontSize: 48,
+        fill: 0xffa63f,
+        align: "center",
+      }),
     };
-    const dashStyle = new PIXI.TextStyle({ fontSize: 48, fill: 0xffffff, align: 'center' });
+    const dashStyle = new PIXI.TextStyle({
+      fontSize: 48,
+      fill: 0xffffff,
+      align: "center",
+    });
 
     // Build an array of elements (score texts and dashes) so we can center them
     const elements: PIXI.Text[] = [];
     for (let i = 0; i < this.scoreOrder.length; i++) {
       const color = this.scoreOrder[i];
-      const scoreText = new PIXI.Text('00', scoreStyleMapping[color]);
+      const scoreText = new PIXI.Text("00", scoreStyleMapping[color]);
       scoreText.anchor.set(0.5);
       this.scoreTexts[color] = scoreText;
       elements.push(scoreText);
 
       if (i < this.scoreOrder.length - 1) {
-        const dashText = new PIXI.Text(' - ', dashStyle);
+        const dashText = new PIXI.Text(" - ", dashStyle);
         dashText.anchor.set(0.5);
         elements.push(dashText);
       }
@@ -94,7 +136,7 @@ export class WinScreen {
 
     // Measure total width
     let totalWidth = 0;
-    elements.forEach(el => {
+    elements.forEach((el) => {
       this.scoreContainer.addChild(el);
       totalWidth += el.width;
     });
@@ -102,7 +144,7 @@ export class WinScreen {
 
     // Center them horizontally
     let offsetX = -totalWidth / 2;
-    elements.forEach(el => {
+    elements.forEach((el) => {
       el.x = offsetX + el.width / 2;
       el.y = 0;
       offsetX += el.width;
@@ -117,31 +159,91 @@ export class WinScreen {
     // Redraw the background with correct sizing
     this.scoreBg.clear();
     this.scoreBg.beginFill(0x000000, 0.7);
-    this.scoreBg.drawRoundedRect(-containerWidth / 2, -heightPadding / 2, containerWidth, containerHeight, 16);
+    this.scoreBg.drawRoundedRect(
+      -containerWidth / 2,
+      -heightPadding / 2,
+      containerWidth,
+      containerHeight,
+      16
+    );
     this.scoreBg.endFill();
 
     // Place the container in the lower center
     this.scoreContainer.x = app.screen.width / 2;
     this.scoreContainer.y = app.screen.height / 2 + 120;
 
-    // "Press 'B' to reset" text
-    const resetText = new PIXI.Text("Press 'B' to reset", {
+    // Replace the "Press 'B' to reset" text with a container that includes button graphics
+    const resetContainer = new PIXI.Container();
+
+    // "Press" text
+    const pressText = new PIXI.Text("Press ", {
       fontSize: 36,
       fill: 0xffffff,
-      align: 'center',
+      align: "center",
     });
-    resetText.anchor.set(0.5);
-    resetText.x = 0;
-    resetText.y = 70; // slightly below the scoreboard row
-    this.scoreContainer.addChild(resetText);
+    pressText.anchor.set(1, 0.5); // Right align
+    resetContainer.addChild(pressText);
+
+    // Create button indicator graphic
+    const buttonGraphic = new PIXI.Graphics();
+    const diamondSize = 8;  // Smaller circle diameter
+    const buttonSpacing = 8; // Smaller spacing between circles
+
+    buttonGraphic.clear();
+
+    // Top button (hollow)
+    buttonGraphic.lineStyle(2, 0xffffff);
+    buttonGraphic.beginFill(0, 0); // Transparent fill (alpha = 0)
+    buttonGraphic.drawCircle(0, -buttonSpacing, diamondSize / 2);
+    buttonGraphic.endFill();
+
+    // Right button (hollow)
+    buttonGraphic.lineStyle(2, 0xffffff);
+    buttonGraphic.beginFill(0, 0); // Transparent fill (alpha = 0)
+    buttonGraphic.drawCircle(buttonSpacing, 0, diamondSize / 2);
+    buttonGraphic.endFill();
+
+    // Left button (hollow)
+    buttonGraphic.lineStyle(2, 0xffffff);
+    buttonGraphic.beginFill(0, 0); // Transparent fill (alpha = 0)
+    buttonGraphic.drawCircle(-buttonSpacing, 0, diamondSize / 2);
+    buttonGraphic.endFill();
+
+    // Bottom button (filled in yellow)
+    buttonGraphic.lineStyle(2, 0xffffff);
+    buttonGraphic.beginFill(0xffffff); // Yellow fill color
+    buttonGraphic.drawCircle(0, buttonSpacing, diamondSize / 2);
+    buttonGraphic.endFill();
+    resetContainer.addChild(buttonGraphic);
+    
+
+    // "to reset" text
+    const resetText = new PIXI.Text(" to reset", {
+      fontSize: 36,
+      fill: 0xffffff,
+      align: "center",
+    });
+    resetText.anchor.set(0, 0.5); // Left align
+    resetContainer.addChild(resetText);
+
+    // Position elements horizontally
+    pressText.x = -10;
+    pressText.y = 0;
+    resetText.x = 10;
+    resetText.y = 0;
+
+    // Center the whole container
+    resetContainer.x = 0;
+    resetContainer.y = 70; // slightly below the scoreboard row
+    this.scoreContainer.addChild(resetContainer);
   }
 
-  declareWinner(winner: ScoreColor | 'Draw') {
+  declareWinner(winner: ScoreColor | "Draw") {
     if (this.gameOver) return;
     this.gameOver = true;
 
-    if (winner === 'Draw') {
-      this.victoryText.text = 'DRAW!';
+    if (winner === "Draw") {
+      this.victoryText.text = "DRAW!";
       this.victoryText.style.fill = 0xffffff;
     } else {
       this.scores[winner] = (this.scores[winner] || 0) + 1;
