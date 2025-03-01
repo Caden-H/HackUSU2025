@@ -1,13 +1,12 @@
 import * as PIXI from 'pixi.js';
 import { Player } from './game/player';
 import { Bullet } from './game/bullet';
+import { Wall } from './game/wall'
 import { WinScreen } from './game/winscreen';
-import { Wall } from './game/wall';
 
 import bodySrc from '../raw_assets/TankBody.svg?url';
 import gunSrc from '../raw_assets/TankGun.svg?url';
 
-// An async IIFE, matching your prior style
 (async () => {
   // Helper to ensure the canvas is a square of size window.innerHeight
   function getSquareSize() {
@@ -15,103 +14,71 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   }
 
   // Create a Pixi Application
-  // (If you're using a custom app.init, adapt accordingly)
   const app = new PIXI.Application();
   await app.init({
     width: getSquareSize(),
     height: getSquareSize(),
-    backgroundColor: 0x333333,
+    backgroundColor: 0x333333
   });
   document.body.appendChild(app.canvas);
 
-  // Position the canvas absolutely at the top
-  app.canvas.style.position = "absolute";
-  app.canvas.style.top = "0";
-
-  // On resize, keep it square and center horizontally
-  window.addEventListener("resize", () => {
+  // Position the canvas absolutely at the top and center it horizontally
+  app.canvas.style.position = 'absolute';
+  app.canvas.style.top = '0';
+  const updateCanvasPosition = () => {
     const size = getSquareSize();
     app.renderer.resize(size, size);
     app.canvas.style.left = `${(window.innerWidth - size) / 2}px`;
-  });
-
-  // Initial position
-  (function initCanvasPosition() {
-    const size = getSquareSize();
-    app.canvas.style.left = `${(window.innerWidth - size) / 2}px`;
-  })();
+  };
+  window.addEventListener('resize', updateCanvasPosition);
+  updateCanvasPosition();
 
   const winScreen = new WinScreen(app);
 
-  // Player
-  const player_body_texture = await PIXI.Assets.load({
-    src: bodySrc,
-    data: { resolution: 10 },
-  });
-  const p1_body_sprite = PIXI.Sprite.from(player_body_texture);
-  p1_body_sprite.anchor.set(0.5);
-  app.stage.addChild(p1_body_sprite);
-  const p2_body_sprite = PIXI.Sprite.from(player_body_texture);
-  p2_body_sprite.anchor.set(0.5);
-  app.stage.addChild(p2_body_sprite);
+  const player_body_texture = await PIXI.Assets.load({ src: bodySrc, data: { resolution: 10 } });
+  const player_gun_texture = await PIXI.Assets.load({ src: gunSrc, data: { resolution: 10 } });
 
-  const player_gun_texture = await PIXI.Assets.load({
-    src: gunSrc,
-    data: { resolution: 10 },
-  });
-  const p1_gun_sprite = PIXI.Sprite.from(player_gun_texture);
-  p1_gun_sprite.anchor.set(0.5);
-  app.stage.addChild(p1_gun_sprite);
-  const p2_gun_sprite = PIXI.Sprite.from(player_gun_texture);
-  p2_gun_sprite.anchor.set(0.5);
-  app.stage.addChild(p2_gun_sprite);
+  const players: Player[] = [];
+  const initialPositions: { x: number; y: number }[] = [];
 
+  const numPlayers = 2;
+  const fixedColors = [0x0000ff, 0xff0000, 0x00ff00, 0xffff00];
   const center = app.canvas.width / 2;
-  // Create two players
-  const player1 = new Player(
-    p1_body_sprite,
-    p1_gun_sprite,
-    center - 100,
-    center - 100,
-    0xff0000,
-    0x0000ff
-  ); // Red
-  const player2 = new Player(
-    p2_body_sprite,
-    p2_gun_sprite,
-    center + 100,
-    center + 100,
-    0x0000ff,
-    0xff0000
-  ); // Blue
+  const radius = 100;
 
-  function reset() {
-    for (let i = bullets.length - 1; i >= 0; i--) {
-      const bullet = bullets[i];
-      app.stage.removeChild(bullet.sprite);
-      bullets.splice(i, 1);
-    }
-
-    player1.sprite.x = center - 100;
-    player1.sprite.y = center - 100;
-    player1.gun.sprite.x = center - 100;
-    player1.gun.sprite.y = center - 100;
-    player1.isDead = false;
-    player1.sprite.visible = true;
-    player1.gun.sprite.visible = true;
-
-    player2.sprite.x = center + 100;
-    player2.sprite.y = center + 100;
-    player2.gun.sprite.x = center + 100;
-    player2.gun.sprite.y = center + 100;
-    player2.isDead = false;
-    player2.sprite.visible = true;
-    player2.gun.sprite.visible = true;
-
-    winScreen.reset();
+  // Helper function to generate a random color (for players beyond the first four)
+  function randomColor() {
+    return Math.floor(Math.random() * 0xffffff);
   }
 
-  // Wall points
+  // Create players in a circle around the center
+  for (let i = 0; i < numPlayers; i++) {
+    const angle = (2 * Math.PI / numPlayers) * i;
+    const x = center + radius * Math.cos(angle);
+    const y = center + radius * Math.sin(angle);
+    initialPositions.push({ x, y });
+
+    const playerColor = i < fixedColors.length ? fixedColors[i] : randomColor();
+    const gunColor = 0xffffff;
+
+    // Create new sprites for this player
+    const bodySprite = new PIXI.Sprite(player_body_texture);
+    bodySprite.anchor.set(0.5);
+    app.stage.addChild(bodySprite);
+    const gunSprite = new PIXI.Sprite(player_gun_texture);
+    gunSprite.anchor.set(0.5);
+    app.stage.addChild(gunSprite);
+
+    const player = new Player(bodySprite, gunSprite, x, y, playerColor, gunColor);
+    (player as any).color = playerColor;
+    players.push(player);
+  }
+
+  for (let i = 0; i < players.length; i++) {
+    const nextIndex = (i + 1) % players.length;
+    players[nextIndex].gun.sprite.tint = players[i].sprite.tint;
+  }
+
   const wallPoints = [
     new PIXI.Point(10, 10),
     new PIXI.Point(app.canvas.width - 10, 10),
@@ -124,102 +91,117 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   const boundary = new Wall(wallPoints);
   const boundaryGraphics = boundary.draw();
   app.stage.addChild(boundaryGraphics);
-
+  
   // Shared bullet array
-  const bullets: Bullet[] = [];
-  // Provide references
-  player1.gun.setBulletArray(bullets, app.stage);
-  player2.gun.setBulletArray(bullets, app.stage);
-  player1.setBulletArray(bullets);
-  player2.setBulletArray(bullets);
+  let bullets: Bullet[] = [];
+  // Provide references to the bullet array for each player's gun
+  for (const player of players) {
+    player.gun.setBulletArray(bullets, app.stage);
+    player.setBulletArray(bullets);
+  }
 
-  // Main game loop
-  app.ticker.add((delta) => {
-    readGamepads();
-    player1.update(delta.elapsedMS / 1000);
-    player2.update(delta.elapsedMS / 1000);
-
-    // Update bullets & remove if expired
+  // Reset function: reset players to their initial positions and clear bullets
+  function reset() {
     for (let i = bullets.length - 1; i >= 0; i--) {
       const bullet = bullets[i];
-      bullet.update(delta.elapsedMS / 1000);
+      app.stage.removeChild(bullet.sprite);
+      bullets.splice(i, 1);
+    }
+    players.forEach((player, index) => {
+      const pos = initialPositions[index];
+      player.sprite.x = pos.x;
+      player.sprite.y = pos.y;
+      player.gun.sprite.x = pos.x;
+      player.gun.sprite.y = pos.y;
+      player.isDead = false;
+      player.sprite.visible = true;
+      player.gun.sprite.visible = true;
+    });
+    winScreen.reset();
+  }
 
-      if (bullet.isExpired) {
-        app.stage.removeChild(bullet.sprite);
-        bullets.splice(i, 1);
+  // Handle gamepad input: assign gamepad i to player i
+  function readGamepads(): void {
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    for (let i = 0; i < players.length; i++) {
+      const gp = gamepads[i];
+      if (gp) {
+        // Movement: player i uses left stick for their own movement.
+        const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
+        players[i].move(moveX, moveY);
+  
+        // Gun control: player i uses right stick to control next player's gun.
+        const nextIndex = (i + 1) % players.length;
+        const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
+        players[nextIndex].gun.setDirection(gunX, gunY);
+  
+        // Shoot if any trigger is pressed, controlling the next player's gun.
+        if (
+          gp.buttons[4]?.pressed || gp.buttons[5]?.pressed ||
+          gp.buttons[6]?.pressed || gp.buttons[7]?.pressed
+        ) {
+          players[nextIndex].gun.shoot(
+            players[nextIndex].sprite.x,
+            players[nextIndex].sprite.y
+          );
+        }
+  
+        // Reset game if button 0 (e.g. "A") is pressed and at least one player is dead.
+        if (gp.buttons[0]?.pressed && players.some(p => p.isDead)) {
+          reset();
+        }
       }
     }
-
-    if ((!player1.isDead && !player2.isDead) || winScreen.isGameOver()) return;
-    if (player1.isDead && !player2.isDead) {
-      winScreen.declareWinner("Blue");
-    } else if (player2.isDead && !player1.isDead) {
-      winScreen.declareWinner("Red");
-    } else {
-      winScreen.declareWinner("Draw");
-    }
-  });
+  }
 
   function applyDeadZone(ax: number, ay: number, deadZone: number = 0.1) {
     const mag = Math.sqrt(ax * ax + ay * ay);
     return mag > deadZone ? [ax / mag, ay / mag] : [0, 0];
   }
 
-  // Handle gamepad input
-  function readGamepads(): void {
-    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+  // Main game loop
+  app.ticker.add((delta) => {
+    readGamepads();
 
-    // === Gamepad 0 -> Player1 ===
-    const gp1 = gamepads[0];
-    if (gp1) {
-      // Move Player1 with left stick
-      const [moveX, moveY] = applyDeadZone(gp1.axes[0], gp1.axes[1]);
-      player1.move(moveX, moveY);
+    // Update all players
+    for (const player of players) {
+      player.update(delta.elapsedMS / 1000);
+    }
 
-      // Right stick -> aim Player2's gun
-      const [gunX, gunY] = applyDeadZone(gp1.axes[2], gp1.axes[3]);
-      player2.gun.setDirection(gunX, gunY);
-
-      // Shoot if triggers pressed
-      if (
-        gp1.buttons[4]?.pressed ||
-        gp1.buttons[5]?.pressed ||
-        gp1.buttons[6]?.pressed ||
-        gp1.buttons[7]?.pressed
-      ) {
-        player2.gun.shoot(player2.sprite.x, player2.sprite.y);
+    // Update bullets & remove expired ones
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+      bullet.update(delta.elapsedMS / 1000);
+      if (bullet.isExpired) {
+        app.stage.removeChild(bullet.sprite);
+        bullets.splice(i, 1);
       }
     }
 
-    // === Gamepad 1 -> Player2 ===
-    const gp2 = gamepads[1];
-    if (gp2) {
-      // Move Player1 with left stick
-      const [moveX, moveY] = applyDeadZone(gp2.axes[0], gp2.axes[1]);
-      player2.move(moveX, moveY);
+    // Win condition: if only one player is still alive, declare them the winner
+    const alivePlayers = players.filter((player) => !player.isDead);
+if (alivePlayers.length === 1 && !winScreen.isGameOver()) {
+  const winnerPlayer = alivePlayers[0] as any;
+  // Map fixed colors to names. For any additional players, you might handle them differently.
+  const fixedMapping: { [key: number]: 'Blue' | 'Red' | 'Green' | 'Yellow' | 'Winner' } = {
+    [0x0000ff]: 'Blue',
+    [0xff0000]: 'Red',
+    [0x00ff00]: 'Green',
+    [0xffff00]: 'Yellow',
+    [0x000000]: 'Winner',
+  };
 
-      // Right stick -> aim Player2's gun
-      const [gunX, gunY] = applyDeadZone(gp2.axes[2], gp2.axes[3]);
-      player1.gun.setDirection(gunX, gunY);
-
-      // Shoot if triggers pressed
-      if (
-        gp2.buttons[4]?.pressed ||
-        gp2.buttons[5]?.pressed ||
-        gp2.buttons[6]?.pressed ||
-        gp2.buttons[7]?.pressed
-      ) {
-        player1.gun.shoot(player1.sprite.x, player1.sprite.y);
-      }
-    }
-
-    if (gp1 && gp2) {
-      if (
-        (player1.isDead || player2.isDead) &&
-        (gp1.buttons[0]?.pressed || gp2.buttons[0]?.pressed)
-      ) {
-        reset();
-      }
-    }
+  // Use the mapping if available; otherwise, default to a generic label.
+  const winnerName = fixedMapping[winnerPlayer.color] || 'Winner';
+  if (winnerName !== 'Winner') {
+    winScreen.declareWinner(winnerName);
   }
+} else if (
+  alivePlayers.length === 0 &&
+  players.some((player) => player.isDead) &&
+  !winScreen.isGameOver()
+) {
+  winScreen.declareWinner('Draw');
+}
+  });
 })();
