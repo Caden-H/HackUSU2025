@@ -5,6 +5,11 @@ import { Bullet } from "./bullet";
 import { vibrateGamepad } from "./vibration";
 import { ParticleSystem } from "./particles"; // Add this import
 
+import deathSrc from '../../raw_assets/hit.mp3';
+
+const death = new Audio(deathSrc);
+death.volume = 0.5;
+
 export class Player {
   public sprite: PIXI.Sprite;
   public gun: Gun;
@@ -98,6 +103,7 @@ export class Player {
   }
 
   public death(bullet: Bullet) {
+    death.play()
     this.isDead = true;
     this.sprite.visible = false;
     this.gun.sprite.visible = false;
