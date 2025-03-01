@@ -9,7 +9,7 @@ export class Bullet {
   private speed: number = 5;
 
   private bounces: number = 0;
-  private maxBounces: number = 2;
+  private maxBounces: number = 3;
 
   constructor(x: number, y: number, dx: number, dy: number) {
     this.sprite = new PIXI.Graphics();
@@ -20,7 +20,7 @@ export class Bullet {
     this.sprite.x = x;
     this.sprite.y = y;
 
-    // Normalize direction
+    // Normalize direction so speed is consistent
     const mag = Math.sqrt(dx * dx + dy * dy);
     if (mag !== 0) {
       dx /= mag;
@@ -29,22 +29,22 @@ export class Bullet {
       dx = 1;
       dy = 0;
     }
+
     this.vx = dx * this.speed;
     this.vy = dy * this.speed;
   }
 
   public update(delta: number): void {
-    console.log('bullet update')
     if (this.isExpired) return;
 
+    // Move the bullet
     this.sprite.x += this.vx;
     this.sprite.y += this.vy;
 
-    // We'll assume a square size of window.innerHeight
-    // You could store a more stable reference in constructor, but this is simplest:
+    // We'll assume a game area the size of window.innerHeight
     const size = window.innerHeight;
 
-    // Bounce off left/right
+    // Bounce left/right
     if (this.sprite.x < 0) {
       this.sprite.x = 0;
       this.vx *= -1;
@@ -55,7 +55,7 @@ export class Bullet {
       this.bounces++;
     }
 
-    // Bounce off top/bottom
+    // Bounce top/bottom
     if (this.sprite.y < 0) {
       this.sprite.y = 0;
       this.vy *= -1;
@@ -66,7 +66,7 @@ export class Bullet {
       this.bounces++;
     }
 
-    // If bounced too many times, mark as expired
+    // If we've bounced too many times, expire
     if (this.bounces > this.maxBounces) {
       this.isExpired = true;
     }

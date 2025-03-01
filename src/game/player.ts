@@ -7,7 +7,7 @@ export class Player {
   public gun: Gun;
 
   private speed: number = 3;
-  private radius: number = 20;  // radius of the player circle
+  private radius: number = 20;
   public isDead: boolean = false;
 
   private bulletArray: Bullet[] = [];
@@ -17,47 +17,40 @@ export class Player {
     this.container.x = x;
     this.container.y = y;
 
-    // Draw a simple circle representing the player
     const gfx = new PIXI.Graphics();
     gfx.beginFill(color);
     gfx.drawCircle(0, 0, this.radius);
     gfx.endFill();
     this.container.addChild(gfx);
 
-    // Create a gun
     this.gun = new Gun();
   }
 
-  public setBulletArray(bullets: Bullet[]): void {
+  public setBulletArray(bullets: Bullet[]) {
     this.bulletArray = bullets;
   }
 
-  // Called each frame (from main.ts)
   public update(delta: number) {
     if (this.isDead) return;
 
-    // Check for collision with all active bullets
+    // Basic collision detection with bullets
     for (const bullet of this.bulletArray) {
       if (!bullet.isExpired) {
         const dx = bullet.sprite.x - this.container.x;
         const dy = bullet.sprite.y - this.container.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Sum of radii: player's 20 + bullet's 5 = 25
+        // sum of radii = 20 (player) + 5 (bullet) = 25
         if (dist < (this.radius + 5)) {
-          // Player is hit
           this.isDead = true;
-          // Hide or remove the player from stage
           this.container.visible = false;
-          // You could also mark bullet as expired if you want one-hit bullets
-          // bullet.isExpired = true;
+          // Optionally bullet.isExpired = true
           break;
         }
       }
     }
   }
 
-  // Called when you move the left stick
   public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
 
