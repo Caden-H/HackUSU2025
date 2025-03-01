@@ -7,6 +7,8 @@ import { RandomWall } from "./game/randomwall";
 import { vibrateGamepad } from "./game/vibration";
 import { ParticleSystem } from "./game/particles";
 
+import logoSrc from "../raw_assets/Logo.svg?url";
+
 import bodySrc from "../raw_assets/TankBody.svg?url";
 import gunSrc from "../raw_assets/TankGun.svg?url";
 
@@ -50,7 +52,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   // We'll create a rounded rectangle as a backdrop
   const startBg = new PIXI.Graphics();
   const bgWidth = app.screen.width * 0.95;
-  const bgHeight = app.screen.height * 0.4;
+  const bgHeight = app.screen.height * 0.5;
   startBg.beginFill(0x000000, 0.75);
   startBg.drawRoundedRect(-bgWidth / 2, -bgHeight / 2, bgWidth, bgHeight, 20);
   startBg.endFill();
@@ -58,18 +60,17 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   startBg.y = app.screen.height / 2;
   startScreen.addChild(startBg);
 
-  // Title Text (bigger)
-  const titleText = new PIXI.Text("SaboTanks", {
-    fontFamily: "Arial",
-    fontSize: 90,
-    fill: 0xffffff,
-    align: "center",
-    fontWeight: "bold",
-  });
-  titleText.anchor.set(0.5);
-  titleText.x = app.screen.width / 2;
-  titleText.y = app.screen.height / 2 - 80;
-  startScreen.addChild(titleText);
+  // Load the logo texture
+  const logoTexture = await PIXI.Assets.load({src: logoSrc, data: { resolution: 10 }});
+  // Create a sprite for the logo
+  const logoSprite = new PIXI.Sprite(logoTexture);
+  logoSprite.anchor.set(0.5);
+  logoSprite.scale = 2
+  logoSprite.x = app.screen.width / 2;
+  // We'll position it a bit above the center of the start screen rectangle
+  logoSprite.y = app.screen.height / 2 - 100;
+  startScreen.addChild(logoSprite);
+
 
   // "Press B to Start" Text (smaller)
   const startButtonText = new PIXI.Text("Press 'B' to Start", {
@@ -80,7 +81,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   });
   startButtonText.anchor.set(0.5);
   startButtonText.x = app.screen.width / 2;
-  startButtonText.y = app.screen.height / 2;
+  startButtonText.y = app.screen.height / 2 + 20;
   startScreen.addChild(startButtonText);
 
   // Instructions Text (below "Press B to Start")
