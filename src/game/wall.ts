@@ -15,9 +15,9 @@ export class Wall {
         }
         gfx.lineTo(this.points[0].x, this.points[0].y);
         gfx.stroke({
-          color: 0xff0000,
-          width: 1,
-          alignment: 0.5,
+          color: 0xcccccc,
+          width: 10,
+          alignment: 0,
         });
         return gfx;
     }
