@@ -115,14 +115,15 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
   const wallPoints = [
     new PIXI.Point(10, 10),
     new PIXI.Point(app.canvas.width - 10, 10),
-    new PIXI.Point(app.canvas.width - 10, app.canvas.height - 10),
+    new PIXI.Point(app.canvas.width - 10, app.canvas.height - 200),
+    new PIXI.Point(app.canvas.width - 200, app.canvas.height - 10),
     new PIXI.Point(10, app.canvas.height - 10),
   ];
 
   // Create a boundary wall
   const boundary = new Wall(wallPoints);
-  app.stage.addChild(boundary.draw());
-
+  const boundaryGraphics = boundary.draw();
+  app.stage.addChild(boundaryGraphics);
 
   // Shared bullet array
   const bullets: Bullet[] = [];
