@@ -5,15 +5,22 @@ import { Bullet } from './bullet';
 export class Player {
   public sprite: PIXI.Sprite;
   public gun: Gun;
-  public radius: number = 20;
   public vx: number = 0;
   public vy: number = 0;
   public speed: number = 3;
+  public radius: number = 20;
   public isDead: boolean = false;
 
   private bulletArray: Bullet[] = [];
 
-  constructor(body_sprite: PIXI.Sprite, gun_sprite: PIXI.Sprite, x: number, y: number, body_color: number, gun_color: number) {
+  constructor(
+    body_sprite: PIXI.Sprite,
+    gun_sprite: PIXI.Sprite,
+    x: number,
+    y: number,
+    body_color: number,
+    gun_color: number
+  ) {
     this.sprite = body_sprite;
     this.sprite.x = x;
     this.sprite.y = y;
@@ -31,6 +38,17 @@ export class Player {
   public update(delta: number) {
     if (this.isDead) return;
 
+    // Update position with velocity (physics update)
+    this.sprite.x += this.vx;
+    this.sprite.y += this.vy;
+    this.gun.sprite.x = this.sprite.x;
+    this.gun.sprite.y = this.sprite.y;
+
+    // Apply friction/damping so the bounce effect decays over time.
+    const damping = 0.9;
+    this.vx *= damping;
+    this.vy *= damping;
+
     // Basic collision detection with bullets
     for (const bullet of this.bulletArray) {
       if (!bullet.isExpired) {
@@ -43,7 +61,7 @@ export class Player {
           this.isDead = true;
           this.sprite.visible = false;
           this.gun.sprite.visible = false;
-          // Optionally bullet.isExpired = true
+          bullet.isExpired = true;
           break;
         }
       }
@@ -52,18 +70,33 @@ export class Player {
 
   public move(xAxis: number, yAxis: number) {
     if (this.isDead) return;
-
-    this.sprite.x += xAxis * this.speed;
-    this.sprite.y += yAxis * this.speed;
-
+    
     if (xAxis !== 0 || yAxis !== 0) {
-        this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
+      const desiredVX = xAxis * this.speed;
+      const desiredVY = yAxis * this.speed;
+      console.log(xAxis, yAxis, desiredVX, desiredVY)
+      
+      // Calculate current velocity magnitude.
+      const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+      
+      // If the current velocity is low (or at most equal to speed), snap to the desired velocity.
+      if (currentVelMag <= this.speed) {
+        this.vx = desiredVX;
+        this.vy = desiredVY;
+      }  else {
+        const lerpFactor = 0.01; // Adjust between 0 and 1 to control influence.
+        this.vx = this.vx + (desiredVX - this.vx) * lerpFactor;
+        this.vy = this.vy + (desiredVY - this.vy) * lerpFactor;
+      }
+      
+      // Update rotation to face the input direction.
+      this.sprite.rotation = Math.atan2(yAxis, xAxis) + Math.PI / 2;
+    } else {
+        const currentVelMag = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+        if (currentVelMag <= this.speed) {
+            this.vx = 0;
+            this.vy = 0;
+        }
     }
-
-    this.gun.sprite.x = this.sprite.x;
-    this.gun.sprite.y = this.sprite.y;
-
-    this.vx = xAxis;
-    this.vy = yAxis;
-  }
+  } 
 }

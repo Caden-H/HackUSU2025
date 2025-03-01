@@ -120,6 +120,11 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     winScreen.reset();
   }
 
+  function applyDeadZone(ax: number, ay: number, deadZone: number = 0.1) {
+    const mag = Math.sqrt(ax * ax + ay * ay);
+    return mag > deadZone ? [ax, ay] : [0, 0];
+  }
+
   // Handle gamepad input: assign gamepad i to player i
   function readGamepads(): void {
     const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
@@ -154,11 +159,6 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     }
   }
 
-  function applyDeadZone(ax: number, ay: number, deadZone: number = 0.1) {
-    const mag = Math.sqrt(ax * ax + ay * ay);
-    return mag > deadZone ? [ax / mag, ay / mag] : [0, 0];
-  }
-
   // Main game loop
   app.ticker.add((delta) => {
     readGamepads();
@@ -174,38 +174,28 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
         const p1 = players[i];
         const p2 = players[j];
   
-        // Only process collisions for players that are alive.
+        // Only process collisions if both players are alive.
         if (p1.isDead || p2.isDead) continue;
   
-        // Compute the vector between the two players.
         const dx = p2.sprite.x - p1.sprite.x;
         const dy = p2.sprite.y - p1.sprite.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
-  
-        // Calculate the minimum distance they should be apart (sum of radii).
         const minDist = p1.radius + p2.radius;
         if (distance < minDist && distance > 0) {
-          // Collision detected: calculate how much they overlap.
-          const overlap = minDist - distance;
-  
-          // Normalize the collision vector.
+          // Get normalized direction vector.
           const nx = dx / distance;
           const ny = dy / distance;
   
-          // Determine a bounce factor; you can tweak this constant for more or less "bounce power".
-          const bounceFactor = 0.5; // Each player will be pushed back by half the overlap distance.
+          // Calculate an impulse based on the overlap.
+          // Adjust the impulseMultiplier to control "bounce power".
+          const impulseMultiplier = 10;
+          const impulse = impulseMultiplier;
   
-          // Displace each player in opposite directions.
-          p1.sprite.x -= nx * overlap * bounceFactor;
-          p1.sprite.y -= ny * overlap * bounceFactor;
-          p2.sprite.x += nx * overlap * bounceFactor;
-          p2.sprite.y += ny * overlap * bounceFactor;
-  
-          // Update the gun positions to match their players.
-          p1.gun.sprite.x = p1.sprite.x;
-          p1.gun.sprite.y = p1.sprite.y;
-          p2.gun.sprite.x = p2.sprite.x;
-          p2.gun.sprite.y = p2.sprite.y;
+          // Add impulse to each player's velocity in opposite directions.
+          p1.vx -= nx * impulse;
+          p1.vy -= ny * impulse;
+          p2.vx += nx * impulse;
+          p2.vy += ny * impulse;
         }
       }
     }

@@ -18,8 +18,8 @@ export class Gun {
   private cooldown: number = 500;
   private lastShotTime: number = 0;
 
-  // The offset distance for bullet spawn (matches the line in main.ts)
-  private offset: number = 50;
+  // The offset distance for bullet spawn
+  private offset: number = 33;
 
   /**
    * Provide an array of bullets and the stage, so we can spawn new bullets.
