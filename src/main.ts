@@ -59,7 +59,7 @@ import gunSrc from "../raw_assets/TankGun.svg?url";
   startScreen.addChild(startBg);
 
   // Title Text (bigger)
-  const titleText = new PIXI.Text("SaboTank", {
+  const titleText = new PIXI.Text("SaboTanks", {
     fontFamily: "Arial",
     fontSize: 90,
     fill: 0xffffff,
