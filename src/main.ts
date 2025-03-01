@@ -133,27 +133,33 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     for (let i = 0; i < players.length; i++) {
       const gp = gamepads[i];
       if (gp) {
-        // Movement: player i uses left stick for their own movement.
+        // Movement: player i uses left stick.
         const [moveX, moveY] = applyDeadZone(gp.axes[0], gp.axes[1]);
         players[i].move(moveX, moveY);
-
+  
         // Gun control: player i uses right stick to control next player's gun.
         const nextIndex = (i + 1) % players.length;
         const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
         players[nextIndex].gun.setDirection(gunX, gunY);
-
-        // Shoot if any trigger is pressed, controlling the next player's gun.
-        if (
-          gp.buttons[4]?.pressed || gp.buttons[5]?.pressed ||
-          gp.buttons[6]?.pressed || gp.buttons[7]?.pressed
-        ) {
-          players[nextIndex].gun.shoot(
+  
+        // Normal shot via left triggers.
+        if (gp.buttons[5]?.pressed || gp.buttons[7]?.pressed) {
+          players[nextIndex].gun.shootNormal(
             players[nextIndex].sprite.x,
             players[nextIndex].sprite.y
           );
         }
-
-        // Reset game if button 0 (e.g. "A") is pressed and at least one player is dead.
+  
+        // Charge shot via right triggers.
+        // We call updateCharge each frame, passing true if the button is pressed.
+        const chargePressed = gp.buttons[4]?.pressed || gp.buttons[6]?.pressed;
+        players[nextIndex].gun.updateCharge(
+          players[nextIndex].sprite.x,
+          players[nextIndex].sprite.y,
+          chargePressed
+        );
+  
+        // Reset game if button 0 is pressed and at least one player is dead.
         if (gp.buttons[0]?.pressed && players.some(p => p.isDead)) {
           reset();
         }

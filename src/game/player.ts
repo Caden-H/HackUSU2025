@@ -57,7 +57,7 @@ export class Player {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         // sum of radii = 20 (player) + 5 (bullet) = 25
-        if (dist < (this.radius + 5)) {
+        if (dist < (this.radius + bullet.radius)) {
           this.isDead = true;
           this.sprite.visible = false;
           this.gun.sprite.visible = false;
