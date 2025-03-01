@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 503.22 133.51">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3 {
+        stroke-width: 0px;
+      }
+
+      .cls-1, .cls-4 {
+        fill: #009ccc;
+      }
+
+      .cls-5 {
+        letter-spacing: 0em;
+      }
+
+      .cls-5, .cls-6, .cls-7, .cls-3, .cls-8 {
+        fill: #ce2929;
+      }
+
+      .cls-6 {
+        letter-spacing: -.04em;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-9 {
+        font-family: Impact, Impact;
+        font-size: 106.47px;
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-width: 3px;
+      }
+
+      .cls-8 {
+        letter-spacing: -.02em;
+      }
+    </style>
+  </defs>
+  <g id="svg1">
+    <text class="cls-9" transform="translate(7.8 96.82)"><tspan class="cls-4" x="0" y="0">SABO</tspan><tspan class="cls-6" x="226.09" y="0">T</tspan><tspan class="cls-7" x="270.91" y="0">AN</tspan><tspan class="cls-8" x="382.63" y="0">K</tspan><tspan class="cls-5" x="438.15" y="0">S</tspan></text>
+    <rect class="cls-3" x="27.52" y="111.64" width="183.13" height="10.96"/>
+    <rect class="cls-1" x="273.26" y="111.64" width="201.91" height="10.96"/>
+    <circle class="cls-2" cx="228.78" cy="117.12" r="9.39"/>
+    <circle class="cls-2" cx="9.39" cy="117.12" r="9.39"/>
+    <circle class="cls-2" cx="256.3" cy="117.12" r="9.39"/>
+    <circle class="cls-2" cx="493.83" cy="117.12" r="9.39"/>
+  </g>
+</svg>
