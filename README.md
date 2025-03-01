@@ -18,6 +18,15 @@ Use the triggers to shoot. The left trigger can charge up faster bullets with pr
 Reset with the bottom face button (A/B).
 
 --- 
+### Supported controllers:
+- Xbox 
+    - Full support for Xbox 360/One controllers.
+- Playstation
+    - Tested on DualSense. Should work with DualShock 4. No Vibration on DualSense.
+- Nintendo Switch 
+    - Pro Controller seems to work wirelessly if nothing is interfering (no steam input). Vibration is inconsistent. 
+
+---
 
 Template from 
 ```bash
