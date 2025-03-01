@@ -1,8 +1,10 @@
 import * as PIXI from 'pixi.js';
 import { Player } from './game/player';
 import { Bullet } from './game/bullet';
-import { Wall } from './game/wall'
 import { WinScreen } from './game/winscreen';
+import { Wall } from './game/wall'
+import { RandomWall } from './game/randomwall';
+
 
 import bodySrc from '../raw_assets/TankBody.svg?url';
 import gunSrc from '../raw_assets/TankGun.svg?url';
@@ -79,17 +81,10 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
     players[nextIndex].gun.sprite.tint = players[i].sprite.tint;
   }
 
-  const wallPoints = [
-    new PIXI.Point(10, 10),
-    new PIXI.Point(app.canvas.width - 10, 10),
-    new PIXI.Point(app.canvas.width - 10, app.canvas.height - 200),
-    new PIXI.Point(app.canvas.width - 200, app.canvas.height - 10),
-    new PIXI.Point(10, app.canvas.height - 10),
-  ];
-
   // Create a boundary wall
-  const boundary = new Wall(wallPoints);
-  const boundaryGraphics = boundary.draw();
+  let randomWall = new RandomWall(app.canvas.width, app.canvas.height);
+  let boundary = new Wall(randomWall.points);
+  let boundaryGraphics = boundary.draw();
   app.stage.addChild(boundaryGraphics);
 
   // Shared bullet array
@@ -107,6 +102,16 @@ import gunSrc from '../raw_assets/TankGun.svg?url';
       app.stage.removeChild(bullet.sprite);
       bullets.splice(i, 1);
     }
+    
+    // Remove old wall graphics.
+    app.stage.removeChild(boundaryGraphics);
+    
+    // Create a new random wall and boundary.
+    randomWall = new RandomWall(app.canvas.width, app.canvas.height);
+    boundary = new Wall(randomWall.points);
+    boundaryGraphics = boundary.draw();
+    app.stage.addChild(boundaryGraphics);
+
     players.forEach((player, index) => {
       const pos = initialPositions[index];
       player.sprite.x = pos.x;

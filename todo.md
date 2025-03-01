@@ -1,5 +1,3 @@
-walls
-
 tutorial?
 
 maybe soccer mode?
@@ -12,3 +10,4 @@ fix spawn
 speedup bullet/firerate
 bulletsize charge thing
 projectile slowdown, then die?
+walls
