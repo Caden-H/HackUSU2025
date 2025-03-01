@@ -97,7 +97,7 @@ export class Gun {
     const cooldownDecreaseRate = 0.05;
     const currentCooldown = Math.max(this.minCooldown, this.baseCooldown - elapsedTime * cooldownDecreaseRate);
     if (now - this.lastShotTime < currentCooldown) return;
-    if (chargeButtonPressed) {
+    if (chargeButtonPressed && this.sprite.visible) {
       if (!this.isCharging) {
         // Start charging on the first frame the button is held.
         this.isCharging = true;
