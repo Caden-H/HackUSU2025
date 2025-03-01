@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-type ScoreColor = 'Red' | 'Blue' | "Green" | "Yellow" | "Purple" | "Cyan" | "Orange";
+type ScoreColor = 'Red' | 'Blue' | 'Green' | 'Yellow' | 'Purple' | 'Cyan' | 'Orange';
 
 export class WinScreen {
   private victoryText: PIXI.Text;
@@ -59,9 +59,9 @@ export class WinScreen {
       Red: new PIXI.TextStyle({ fontSize: 48, fill: 0xff0000, align: 'center' }),
       Green: new PIXI.TextStyle({ fontSize: 48, fill: 0x00ff00, align: 'center' }),
       Yellow: new PIXI.TextStyle({ fontSize: 48, fill: 0xffff00, align: 'center' }),
-      Purple: new PIXI.TextStyle({ fontSize: 48, fill: 0xff00ff, align: 'center' }),
-      Cyan: new PIXI.TextStyle({ fontSize: 48, fill: 0x00ffff, align: 'center' }),
-      Orange: new PIXI.TextStyle({ fontSize: 48, fill: 0xffa500, align: 'center' }),
+      Purple: new PIXI.TextStyle({ fontSize: 48, fill: 0xe523ff, align: 'center' }),
+      Cyan: new PIXI.TextStyle({ fontSize: 48, fill: 0x23ffa3, align: 'center' }),
+      Orange: new PIXI.TextStyle({ fontSize: 48, fill: 0xffa63f, align: 'center' }),
     };
     const dashStyle = new PIXI.TextStyle({ fontSize: 48, fill: 0xffffff, align: 'center' });
 
