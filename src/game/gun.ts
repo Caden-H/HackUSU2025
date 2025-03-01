@@ -1,8 +1,8 @@
-import * as PIXI from 'pixi.js';
-import { Bullet } from './bullet';
+import * as PIXI from "pixi.js";
+import { Bullet } from "./bullet";
 import { vibrateGamepad } from "./vibration";
-// Import the Player type if needed so TypeScript knows about vx and vy.
-import { Player } from './player';
+import { Player } from "./player";
+import { ParticleSystem } from "./particles"; // Add this import
 
 export class Gun {
   public sprite: PIXI.Sprite;
@@ -34,6 +34,8 @@ export class Gun {
   // Charge indicator graphic for animation.
   private chargeIndicator: PIXI.Graphics;
 
+  private particleSystem: ParticleSystem; // Add this property
+
   /**
    * @param sprite The gun sprite.
    * @param x Initial x position.
@@ -41,12 +43,20 @@ export class Gun {
    * @param color Tint for the gun.
    * @param owner The Player owning this gun (so we can adjust their vx, vy for recoil).
    */
-  constructor(sprite: PIXI.Sprite, x: number, y: number, color: number, owner: Player) {
+  constructor(
+    sprite: PIXI.Sprite,
+    x: number,
+    y: number,
+    color: number,
+    owner: Player,
+    particleSystem: ParticleSystem
+  ) {
     this.sprite = sprite;
     this.sprite.x = x;
     this.sprite.y = y;
     this.sprite.tint = color;
     this.owner = owner;
+    this.particleSystem = particleSystem; // Store the particle system
 
     // Create the charge indicator (initially invisible)
     this.chargeIndicator = new PIXI.Graphics();
@@ -84,7 +94,10 @@ export class Gun {
     const now = performance.now();
     const elapsedTime = now - this.gameStartTime;
     const cooldownDecreaseRate = 0.05;
-    const currentCooldown = Math.max(this.minCooldown, this.baseCooldown - elapsedTime * cooldownDecreaseRate);
+    const currentCooldown = Math.max(
+      this.minCooldown,
+      this.baseCooldown - elapsedTime * cooldownDecreaseRate
+    );
 
     if (now - this.lastShotTime < currentCooldown) return;
     this.lastShotTime = now;
@@ -107,6 +120,16 @@ export class Gun {
     this.bulletsRef.push(bullet);
     this.stageRef.addChild(bullet.sprite);
 
+    // Add smoke particle effect at the gun tip
+    const smokePosX = originX + this.direction.x * this.offset;
+    const smokePosY = originY + this.direction.y * this.offset;
+    this.particleSystem.createGunSmoke(
+      smokePosX,
+      smokePosY,
+      this.direction.x,
+      this.direction.y
+    );
+
     // Vibrate after successfully firing the bullet
     if (gp) {
       vibrateGamepad(gp, 50, 0.8, 0.4); // Using fixed duration
@@ -118,11 +141,19 @@ export class Gun {
    * If chargeButtonPressed is true, then start (or continue) charging.
    * When it becomes false, release the charged shot.
    */
-  public updateCharge(originX: number, originY: number, chargeButtonPressed: boolean, gp?: Gamepad): void {
+  public updateCharge(
+    originX: number,
+    originY: number,
+    chargeButtonPressed: boolean,
+    gp?: Gamepad
+  ): void {
     const now = performance.now();
     const elapsedTime = now - this.gameStartTime;
     const cooldownDecreaseRate = 0.05;
-    const currentCooldown = Math.max(this.minCooldown, this.baseCooldown - elapsedTime * cooldownDecreaseRate);
+    const currentCooldown = Math.max(
+      this.minCooldown,
+      this.baseCooldown - elapsedTime * cooldownDecreaseRate
+    );
 
     if (now - this.lastShotTime < currentCooldown) return;
 
@@ -141,7 +172,7 @@ export class Gun {
       // Grow the indicator: linearly scale up to 5× base radius.
       const indicatorRadius = baseBulletRadius * (1 + 4 * t);
       // Change to gold if fully charged.
-      const indicatorColor = t >= 1 ? 0xFFD700 : 0xffffff;
+      const indicatorColor = t >= 1 ? 0xffd700 : 0xffffff;
 
       // Very slight vibration while charging
       if (gp && chargeDuration < this.maxCharge) {
@@ -155,8 +186,12 @@ export class Gun {
       this.chargeIndicator.endFill();
 
       // Position the indicator at the tip of the gun.
-      const tipX = this.sprite.x + this.direction.x * (this.offset + indicatorRadius * this.offsetMult);
-      const tipY = this.sprite.y + this.direction.y * (this.offset + indicatorRadius * this.offsetMult);
+      const tipX =
+        this.sprite.x +
+        this.direction.x * (this.offset + indicatorRadius * this.offsetMult);
+      const tipY =
+        this.sprite.y +
+        this.direction.y * (this.offset + indicatorRadius * this.offsetMult);
       this.chargeIndicator.x = tipX;
       this.chargeIndicator.y = tipY;
 
@@ -176,7 +211,11 @@ export class Gun {
   /**
    * Fire a charged shot based on how long the charge button was held.
    */
-  private releaseChargeShot(originX: number, originY: number, gp?: Gamepad): void {
+  private releaseChargeShot(
+    originX: number,
+    originY: number,
+    gp?: Gamepad
+  ): void {
     const now = performance.now();
     this.lastShotTime = now;
     const chargeDuration = now - this.chargeStartTime;
@@ -203,7 +242,7 @@ export class Gun {
       }
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
-      bulletColor = 0xFFD700; // gold
+      bulletColor = 0xffd700; // gold
       slowdown = 0.03;
 
       // ---- RECOIL ----
@@ -214,8 +253,12 @@ export class Gun {
     }
 
     // Spawn the bullet at the tip of the gun plus an offset equal to the bullet radius
-    const bulletX = originX + this.direction.x * (this.offset + bulletRadius * this.offsetMult);
-    const bulletY = originY + this.direction.y * (this.offset + bulletRadius * this.offsetMult);
+    const bulletX =
+      originX +
+      this.direction.x * (this.offset + bulletRadius * this.offsetMult);
+    const bulletY =
+      originY +
+      this.direction.y * (this.offset + bulletRadius * this.offsetMult);
     const bullet = new Bullet(
       bulletX,
       bulletY,
@@ -229,6 +272,21 @@ export class Gun {
     this.bulletsRef.push(bullet);
     if (this.stageRef) {
       this.stageRef.addChild(bullet.sprite);
+    }
+
+    // After creating the bullet, add smoke effect (larger for charged shots)
+    const smokePosX = originX + this.direction.x * this.offset;
+    const smokePosY = originY + this.direction.y * this.offset;
+
+    // Create multiple smoke particles for charged shots
+    const particleCount = chargeDuration >= this.maxCharge ? 10 : 5;
+    for (let i = 0; i < particleCount; i++) {
+      this.particleSystem.createGunSmoke(
+        smokePosX,
+        smokePosY,
+        this.direction.x,
+        this.direction.y
+      );
     }
   }
 }

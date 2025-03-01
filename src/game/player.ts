@@ -3,6 +3,7 @@ import { Wall } from "./wall";
 import { Gun } from "./gun";
 import { Bullet } from "./bullet";
 import { vibrateGamepad } from "./vibration";
+import { ParticleSystem } from "./particles"; // Add this import
 
 export class Player {
   public sprite: PIXI.Sprite;
@@ -12,7 +13,8 @@ export class Player {
   public speed: number = 180;
   public radius: number = 20;
   public isDead: boolean = false;
-  public playerIndex: number = 0; // Track player's index for gamepad access
+  public playerIndex: number = 0;
+  private particleSystem: ParticleSystem; // Add this property
 
   private bulletArray: Bullet[] = [];
 
@@ -23,7 +25,8 @@ export class Player {
     y: number,
     body_color: number,
     gun_color: number,
-    index: number = 0 // Add index parameter with default value
+    index: number = 0,
+    particleSystem: ParticleSystem // Add this parameter
   ) {
     this.sprite = body_sprite;
     this.sprite.x = x;
@@ -32,8 +35,9 @@ export class Player {
     this.sprite.scale = 0.15;
     gun_sprite.scale = this.sprite.scale;
     this.playerIndex = index;
+    this.particleSystem = particleSystem; // Store the particle system
 
-    this.gun = new Gun(gun_sprite, x, y, gun_color, this);
+    this.gun = new Gun(gun_sprite, x, y, gun_color, this, particleSystem); // Pass particleSystem to Gun
   }
 
   public setBulletArray(bullets: Bullet[]) {
@@ -91,11 +95,20 @@ export class Player {
     this.gun.sprite.visible = false;
     bullet.isExpired = true;
 
+    // Create explosion effect at player position
+    // Use the player's color for the explosion
+    const explosionColor = this.sprite.tint;
+    this.particleSystem.createExplosion(
+      this.sprite.x,
+      this.sprite.y,
+      1.5, // Size - make it larger than default
+      explosionColor
+    );
+
     // Get the gamepad for this player and apply a strong death vibration
     const gamepads = navigator.getGamepads();
     const gamepad = gamepads[this.playerIndex];
     if (gamepad) vibrateGamepad(gamepad, 200, 1.0, 1.0);
-
   }
 
   public move(xAxis: number, yAxis: number) {
