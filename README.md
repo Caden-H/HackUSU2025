@@ -1,4 +1,4 @@
-# HackUSU2025 - [Play online](https://hack-usu-2025.vercel.app/)
+# HackUSU2025 - SABOTANKS - 2nd Place - [Play online](https://hack-usu-2025.vercel.app/)
 ### Hack USU Event 2025 | Game Dev 
 #### Theme: Single-Device Local Multiplayer
 
