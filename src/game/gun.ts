@@ -17,7 +17,7 @@ const pew = new Audio(pewSrc);
 pew.volume = 0.1;
 
 const charge = new Audio(chargeSrc);
-charge.volume = 1;
+charge.volume = 0.7;
 
 export class Gun {
   public sprite: PIXI.Sprite;

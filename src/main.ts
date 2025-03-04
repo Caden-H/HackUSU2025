@@ -196,6 +196,22 @@ import musicSrc from '../raw_assets/music.wav';
     return Math.floor(Math.random() * 0xffffff);
   }
 
+  let gunMapping: Array<number>;
+
+  function randomDerangement(n: number) {
+    while (true) {
+      const arr = [...Array(n).keys()];  // e.g. [0,1,2,...,n-1]
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      // Check if deranged (i.e., arr[i] != i for all i)
+      if (arr.every((val, idx) => val !== idx)) {
+        return arr;
+      }
+    }
+  }
+
   /**
    * Start the actual game with the given number of players
    */
@@ -282,6 +298,12 @@ import musicSrc from '../raw_assets/music.wav';
       players.push(player);
     }
 
+    const derangement = randomDerangement(players.length);
+    for (let i = 0; i < players.length; i++) {
+      players[derangement[i]].gun.sprite.tint = players[i].sprite.tint;
+    }
+    gunMapping = derangement;
+
     // Tint each next gun sprite to match the player's color controlling it
     for (let i = 0; i < players.length; i++) {
       const nextIndex = (i + 1) % players.length;
@@ -331,6 +353,13 @@ import musicSrc from '../raw_assets/music.wav';
       player.sprite.visible = true;
       player.gun.sprite.visible = true;
     });
+
+    const derangement = randomDerangement(players.length);
+    for (let i = 0; i < players.length; i++) {
+      players[derangement[i]].gun.sprite.tint = players[i].sprite.tint;
+    }
+    gunMapping = derangement;
+
     winScreen.reset();
   }
 
@@ -367,30 +396,30 @@ import musicSrc from '../raw_assets/music.wav';
         players[i].move(moveX, moveY);
 
         // Gun control: player i -> next player's gun
-        const nextIndex = (i + 1) % players.length;
+        const gunIndex = gunMapping[i];
         const [gunX, gunY] = applyDeadZone(gp.axes[2], gp.axes[3]);
-        players[nextIndex].gun.setDirection(gunX, gunY);
+        players[gunIndex].gun.setDirection(gunX, gunY);
 
         // Normal shot via triggers (e.g. 5 or 7).
         if (gp.buttons[5]?.pressed || gp.buttons[7]?.pressed) {
-          players[nextIndex].gun.shootNormal(
-            players[nextIndex].sprite.x,
-            players[nextIndex].sprite.y,
+          players[gunIndex].gun.shootNormal(
+            players[gunIndex].sprite.x,
+            players[gunIndex].sprite.y,
             gp
           );
         }
 
         // Charge shot via triggers 4 or 6
         const chargePressed = gp.buttons[4]?.pressed || gp.buttons[6]?.pressed;
-        players[nextIndex].gun.updateCharge(
-          players[nextIndex].sprite.x,
-          players[nextIndex].sprite.y,
+        players[gunIndex].gun.updateCharge(
+          players[gunIndex].sprite.x,
+          players[gunIndex].sprite.y,
           chargePressed,
           gp
         );
 
         // If B pressed and a player is dead, reset
-        if (gp.buttons[0]?.pressed && players.some((p) => p.isDead)) {
+        if (gp.buttons[0]?.pressed && winScreen.isGameOver()) {
           reset();
         }
       }
