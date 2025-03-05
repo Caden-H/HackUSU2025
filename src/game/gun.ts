@@ -286,10 +286,10 @@ export class Gun {
       const t = chargeDuration / this.maxCharge; // 0 to 1
       if (gp) {
         vibrateGamepad(gp, 100, 0.5, 0.2 * (1 + t));
+        pew.pause()
+        pew.currentTime = 0;
+        pew.play()
       }
-      pew.pause()
-      pew.currentTime = 0;
-      pew.play()
       bulletSpeed = baseBulletSpeed * (1 + t);
       bulletRadius = baseBulletRadius * (1 + 4 * t);
       bulletColor = 0xffffff;
@@ -297,8 +297,10 @@ export class Gun {
       // Overcharged: radius stays at 5x base, speed drops to half, color = gold
       if (gp) {
         vibrateGamepad(gp, 100, 0.5, 0.5);
+        blast.pause()
+        blast.currentTime = 0
+        blast.play()
       }
-      blast.play()
 
       bulletSpeed = baseBulletSpeed * 0.5;
       bulletRadius = baseBulletRadius * 5;
@@ -308,8 +310,10 @@ export class Gun {
       // ---- RECOIL ----
       // We'll push the player backwards by recoilPower in the opposite direction of the shot
       // i.e. negative of this.direction
-      this.owner.vx -= this.direction.x * this.recoilPower;
-      this.owner.vy -= this.direction.y * this.recoilPower;
+      if (gp) {
+        this.owner.vx -= this.direction.x * this.recoilPower;
+        this.owner.vy -= this.direction.y * this.recoilPower;
+      }
     }
 
     // Spawn the bullet at the tip of the gun plus an offset equal to the bullet radius
@@ -335,12 +339,13 @@ export class Gun {
     }
 
     // Only create smoke for normal charged shots, NOT for overcharged shots
-    if (!isOvercharged) {
+    if (!isOvercharged && gp) {
       // After creating the bullet, add smoke effect
       const smokePosX = originX + this.direction.x * this.offset;
       const smokePosY = originY + this.direction.y * this.offset;
 
       // Create smoke for charged shots
+      const t = chargeDuration / this.maxCharge;
       const particleCount = 3;
       for (let i = 0; i < particleCount; i++) {
         this.particleSystem.createGunSmoke(
@@ -348,7 +353,7 @@ export class Gun {
           smokePosY,
           this.direction.x,
           this.direction.y,
-          true // mark as charged
+          t > 0.3 // mark as charged
         );
       }
     }

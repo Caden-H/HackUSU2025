@@ -304,12 +304,6 @@ import musicSrc from '../raw_assets/music.wav';
     }
     gunMapping = derangement;
 
-    // Tint each next gun sprite to match the player's color controlling it
-    for (let i = 0; i < players.length; i++) {
-      const nextIndex = (i + 1) % players.length;
-      players[nextIndex].gun.sprite.tint = players[i].sprite.tint;
-    }
-
     // Create a new random wall
     randomWall = new RandomWall(app.canvas.width, app.canvas.height);
     boundary = new Wall(randomWall.points);
@@ -327,11 +321,6 @@ import musicSrc from '../raw_assets/music.wav';
    * Reset the game while in "play" state
    */
   function reset() {
-    for (let i = bullets.length - 1; i >= 0; i--) {
-      const bullet = bullets[i];
-      app.stage.removeChild(bullet.sprite);
-      bullets.splice(i, 1);
-    }
     // Remove old wall
     app.stage.removeChild(boundaryGraphics);
 
@@ -352,7 +341,20 @@ import musicSrc from '../raw_assets/music.wav';
       player.isDead = false;
       player.sprite.visible = true;
       player.gun.sprite.visible = true;
+      
+      const gunIndex = gunMapping[index];
+      players[gunIndex].gun.updateCharge(
+        players[gunIndex].sprite.x,
+        players[gunIndex].sprite.y,
+        false
+      );
     });
+    
+    for (let i = bullets.length - 1; i >= 0; i--) {
+      const bullet = bullets[i];
+      app.stage.removeChild(bullet.sprite);
+      bullets.splice(i, 1);
+    }
 
     const derangement = randomDerangement(players.length);
     for (let i = 0; i < players.length; i++) {
